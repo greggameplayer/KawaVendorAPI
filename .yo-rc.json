@@ -1,0 +1,55 @@
+{
+  "generator-jhipster": {
+    "applicationType": "microservice",
+    "authenticationType": "jwt",
+    "baseName": "KawaVendorAPI",
+    "blueprints": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.3.2"
+      }
+    ],
+    "buildTool": "maven",
+    "cacheProvider": "hazelcast",
+    "clientFramework": "no",
+    "creationTimestamp": 1674745460765,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "dtoSuffix": "DTO",
+    "enableGradleEnterprise": false,
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": true,
+    "enableTranslation": true,
+    "entities": [],
+    "entitySuffix": "",
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "7.9.3",
+    "jwtSecretKey": "YWM2NDI4NTlkYzgwNDFhOWU0MjgxNzcwMjIyM2U1NWUzNjQ5ZDM3NDNhYWRhM2RhZGQ2NjkyMDE2ZjdjOGZkNGNlYThhMDVlMTRmNmY1ZmY3YmI3MWJhODlkZjA0MjRlZTZmOGUyYWY4ZGE0NzQxNGU4MmRmNjI1ZmY5ODVjNTE=",
+    "languages": ["fr", "en"],
+    "messageBroker": false,
+    "microfrontend": false,
+    "microfrontends": [],
+    "nativeLanguage": "fr",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.3.2"
+      }
+    ],
+    "packageName": "com.kawa",
+    "pages": [],
+    "prodDatabaseType": "postgresql",
+    "reactive": false,
+    "searchEngine": false,
+    "serverPort": "8081",
+    "serverSideOptions": ["enableSwaggerCodegen:true"],
+    "serviceDiscoveryType": "eureka",
+    "skipCheckLengthOfIdentifier": false,
+    "skipClient": true,
+    "skipFakeData": false,
+    "skipUserManagement": true,
+    "testFrameworks": ["cucumber"],
+    "websocket": false,
+    "withAdminUi": false
+  }
+}
