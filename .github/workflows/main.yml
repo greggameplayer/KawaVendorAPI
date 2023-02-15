@@ -15,10 +15,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 11
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Install Snyk CLI
         run: |
-          curl -Lo ./snyk $(curl -s https://api.github.com/repos/snyk/snyk/releases/latest | grep "browser_download_url.*snyk-linux" | cut -d ':' -f 2,3 | tr -d \" | tr -d ' ')
+          curl -Lo ./snyk $(curl -s https://api.github.com/repositories/45247496/releases/latest | grep "browser_download_url.*snyk-linux" | grep -vE "browser_download_url.*snyk-linux-arm64|browser_download_url.*snyk-linux*.sha256" | cut -d ':' -f 2,3 | tr -d \" | tr -d ' ')
           chmod +x snyk
+          chmod +x mvnw
       - name: Snyk test
         continue-on-error: true
         run: ./snyk test --all-projects
@@ -32,7 +36,7 @@ jobs:
       - name: Run backend test
         run: |
           chmod +x mvnw
-           run ci:backend:test
+          npm run ci:backend:test
       - name: Analyze code with SonarQube
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
