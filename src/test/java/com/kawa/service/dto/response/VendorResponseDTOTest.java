@@ -1,4 +1,4 @@
-package com.kawa.service.dto;
+package com.kawa.service.dto.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
