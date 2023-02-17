@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,31 +37,35 @@ public class VendorServiceImpl implements VendorService {
 
     private final TokenProvider tokenProvider;
 
+    private final PasswordEncoder passwordEncoder;
+
     public VendorServiceImpl(
         VendorRepository vendorRepository,
         VendorResponseMapper vendorResponseMapper,
         VendorRequestMapper vendorRequestMapper,
-        TokenProvider tokenProvider
+        TokenProvider tokenProvider,
+        PasswordEncoder passwordEncoder
     ) {
         this.vendorRepository = vendorRepository;
         this.vendorResponseMapper = vendorResponseMapper;
         this.vendorRequestMapper = vendorRequestMapper;
         this.tokenProvider = tokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) {
         log.debug("Request to save Vendor : {}", vendorRequestDTO);
-        Vendor vendor = vendorRequestMapper.toEntity(vendorRequestDTO);
-
         // create a jwt token for the vendor
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            vendorRequestDTO.getName(),
-            "test-password",
+            vendorRequestDTO.getUsername(),
+            vendorRequestDTO.getPassword(),
             Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
         );
+        Vendor vendor = vendorRequestMapper.toEntity(vendorRequestDTO);
         String jwt = tokenProvider.createToken(authentication, false);
         vendor.setToken(jwt);
+        vendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
         vendor = vendorRepository.save(vendor);
         return vendorResponseMapper.toDto(vendor);
     }
@@ -71,6 +76,10 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository
             .findById(id)
             .map(existingVendor -> vendorRequestMapper.toEntity(vendorRequestDTO, id, existingVendor.getToken()))
+            .map(existingVendor -> {
+                existingVendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
+                return existingVendor;
+            })
             .map(vendorRepository::save)
             .map(vendorResponseMapper::toDto)
             .orElseThrow();

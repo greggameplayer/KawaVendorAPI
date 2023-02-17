@@ -3,6 +3,7 @@ package com.kawa.web.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasItem;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +70,9 @@ class VendorResourceIT {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private Vendor vendor;
 
@@ -114,10 +119,10 @@ class VendorResourceIT {
         List<Vendor> vendorList = vendorRepository.findAll();
         assertThat(vendorList).hasSize(databaseSizeBeforeCreate + 1);
         Vendor testVendor = vendorList.get(vendorList.size() - 1);
-        Assertions.assertTrue(tokenProvider.validateToken(testVendor.getToken()));
+        assertTrue(tokenProvider.validateToken(testVendor.getToken()));
         assertThat(testVendor.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testVendor.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(testVendor.getPassword()).isEqualTo(DEFAULT_PASSWORD);
+        assertTrue(passwordEncoder.matches(DEFAULT_PASSWORD, testVendor.getPassword()));
     }
 
     @Test
@@ -194,7 +199,7 @@ class VendorResourceIT {
         Vendor testVendor = vendorList.get(vendorList.size() - 1);
         assertThat(testVendor.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testVendor.getUsername()).isEqualTo(UPDATED_USERNAME);
-        assertThat(testVendor.getPassword()).isEqualTo(UPDATED_PASSWORD);
+        assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, testVendor.getPassword()));
     }
 
     @Test
