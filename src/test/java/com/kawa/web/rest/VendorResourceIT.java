@@ -1,6 +1,7 @@
 package com.kawa.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,10 +42,16 @@ class VendorResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_USERNAME = "AAAAAAAAAA";
+    private static final String UPDATED_USERNAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PASSWORD = "AAAAAAAAAA";
+    private static final String UPDATED_PASSWORD = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/vendors";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
@@ -70,7 +78,7 @@ class VendorResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Vendor createEntity(EntityManager em) {
-        Vendor vendor = new Vendor().token(DEFAULT_TOKEN).name(DEFAULT_NAME);
+        Vendor vendor = new Vendor().token(DEFAULT_TOKEN).name(DEFAULT_NAME).username(DEFAULT_USERNAME).password(DEFAULT_PASSWORD);
         return vendor;
     }
 
@@ -108,6 +116,8 @@ class VendorResourceIT {
         Vendor testVendor = vendorList.get(vendorList.size() - 1);
         Assertions.assertTrue(tokenProvider.validateToken(testVendor.getToken()));
         assertThat(testVendor.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testVendor.getUsername()).isEqualTo(DEFAULT_USERNAME);
+        assertThat(testVendor.getPassword()).isEqualTo(DEFAULT_PASSWORD);
     }
 
     @Test
@@ -123,7 +133,9 @@ class VendorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(vendor.getId().intValue())))
             .andExpect(jsonPath("$.[*].token").value(hasItem(DEFAULT_TOKEN)))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME)))
+            .andExpect(jsonPath("$.[*].password").value(hasItem(DEFAULT_PASSWORD)));
     }
 
     @Test
@@ -139,7 +151,9 @@ class VendorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(vendor.getId().intValue()))
             .andExpect(jsonPath("$.token").value(DEFAULT_TOKEN))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME))
+            .andExpect(jsonPath("$.password").value(DEFAULT_PASSWORD));
     }
 
     @Test
@@ -162,6 +176,8 @@ class VendorResourceIT {
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
         updatedVendor.name(UPDATED_NAME);
+        updatedVendor.username(UPDATED_USERNAME);
+        updatedVendor.password(UPDATED_PASSWORD);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
@@ -177,6 +193,104 @@ class VendorResourceIT {
         assertThat(vendorList).hasSize(databaseSizeBeforeUpdate);
         Vendor testVendor = vendorList.get(vendorList.size() - 1);
         assertThat(testVendor.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testVendor.getUsername()).isEqualTo(UPDATED_USERNAME);
+        assertThat(testVendor.getPassword()).isEqualTo(UPDATED_PASSWORD);
+    }
+
+    @Test
+    @Transactional
+    void putExistingVendorWithNoUsername() throws Exception {
+        // Initialize the database
+        vendorRepository.saveAndFlush(vendor);
+
+        // Update the vendor
+        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
+        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
+        em.detach(updatedVendor);
+        updatedVendor.name(UPDATED_NAME);
+        updatedVendor.username(null);
+        updatedVendor.password(UPDATED_PASSWORD);
+        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
+
+        restVendorMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, updatedVendor.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
+            )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    void putExistingVendorWithNoPassword() throws Exception {
+        // Initialize the database
+        vendorRepository.saveAndFlush(vendor);
+
+        // Update the vendor
+        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
+        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
+        em.detach(updatedVendor);
+        updatedVendor.name(UPDATED_NAME);
+        updatedVendor.username(UPDATED_USERNAME);
+        updatedVendor.password(null);
+        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
+
+        restVendorMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, updatedVendor.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
+            )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    void putExistingVendorWithBlankUsername() throws Exception {
+        // Initialize the database
+        vendorRepository.saveAndFlush(vendor);
+
+        // Update the vendor
+        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
+        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
+        em.detach(updatedVendor);
+        updatedVendor.name(UPDATED_NAME);
+        updatedVendor.username(UPDATED_USERNAME);
+        updatedVendor.password("");
+        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
+
+        restVendorMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, updatedVendor.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
+            )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    void putExistingVendorWithBlankPassword() throws Exception {
+        // Initialize the database
+        vendorRepository.saveAndFlush(vendor);
+
+        // Update the vendor
+        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
+        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
+        em.detach(updatedVendor);
+        updatedVendor.name(UPDATED_NAME);
+        updatedVendor.username(UPDATED_USERNAME);
+        updatedVendor.password("");
+        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
+
+        restVendorMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, updatedVendor.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
+            )
+            .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -30,6 +30,14 @@ public class Vendor implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @NotNull
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
+
+    @NotNull
+    @Column(name = "password", nullable = false)
+    private String password;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -71,6 +79,32 @@ public class Vendor implements Serializable {
         this.name = name;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    public Vendor username(String username) {
+        this.setUsername(username);
+        return this;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public Vendor password(String password) {
+        this.setPassword(password);
+        return this;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -97,6 +131,8 @@ public class Vendor implements Serializable {
             "id=" + getId() +
             ", token='" + getToken() + "'" +
             ", name='" + getName() + "'" +
+            ", username='" + getUsername() + "'" +
+            ", password='" + getPassword() + "'" +
             "}";
     }
 }

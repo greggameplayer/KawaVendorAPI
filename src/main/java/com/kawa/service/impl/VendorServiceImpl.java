@@ -52,6 +52,7 @@ public class VendorServiceImpl implements VendorService {
     public VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) {
         log.debug("Request to save Vendor : {}", vendorRequestDTO);
         Vendor vendor = vendorRequestMapper.toEntity(vendorRequestDTO);
+
         // create a jwt token for the vendor
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
             vendorRequestDTO.getName(),

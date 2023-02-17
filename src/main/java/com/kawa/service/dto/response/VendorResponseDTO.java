@@ -54,12 +54,12 @@ public class VendorResponseDTO extends VendorRequestDTO implements Serializable 
     }
 
     // prettier-ignore
+
     @Override
     public String toString() {
         return "VendorResponseDTO{" +
-            "id=" + getId() +
-            ", token='" + getToken() + "'" +
-            ", name='" + getName() + "'" +
-            "}";
+            "id=" + id +
+            ", token='" + token + '\'' +
+            '}';
     }
 }
