@@ -1,10 +1,12 @@
 package com.kawa.web.rest;
 
 import com.kawa.repository.VendorRepository;
+import com.kawa.security.AuthoritiesConstants;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
 import com.kawa.web.rest.errors.BadRequestAlertException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -22,6 +25,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.kawa.domain.Vendor}.
  */
 @RestController
+@SecurityRequirement(name = "bearer")
 @RequestMapping("/api")
 public class VendorResource {
 

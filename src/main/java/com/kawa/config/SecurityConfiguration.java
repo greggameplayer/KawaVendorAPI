@@ -42,6 +42,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().sameOrigin();
         // @formatter:off
         http
             .csrf()
@@ -57,6 +58,8 @@ public class SecurityConfiguration {
             .authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/vendors").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/api/vendors/login").permitAll()
             .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()

@@ -14,3 +14,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
+
+default-user:
+  username: '{cipher}a4698e5213c886b62800624d94dcdcc5953d4cee68447fa1c59bd48d7d92ca75'
+  password: '{cipher}2e475a96d63c090548cce8493863f3df673373c9ec005f28979aed303ea120bf'

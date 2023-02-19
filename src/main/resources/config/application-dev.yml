@@ -56,7 +56,7 @@ spring:
   h2:
     console:
       # disable spring boot built-in h2-console since we start it manually with correct configuration
-      enabled: false
+      enabled: true
   jpa:
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
@@ -128,5 +128,8 @@ jhipster:
 # More documentation is available at:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
-
+application:
+  default-user:
+    username: admin
+    password: admin
 # application:
