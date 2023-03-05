@@ -1,0 +1,12 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  artifacts:
+    - image: registry.gregsvc.fr/kawa-vendor-api/kawavendorapi
+      context: ../KawaVendorAPI
+      jib: {}
+  tagPolicy:
+    envTemplate:
+      template: '{{.IMAGE_NAME}}:latest'
+deploy:
+  kustomize: {}
