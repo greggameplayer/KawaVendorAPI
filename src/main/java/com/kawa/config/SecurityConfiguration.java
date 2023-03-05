@@ -4,7 +4,6 @@ import com.kawa.security.*;
 import com.kawa.security.jwt.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,26 +12,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
-import tech.jhipster.config.JHipsterProperties;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
 public class SecurityConfiguration {
 
-    private final JHipsterProperties jHipsterProperties;
-
     private final TokenProvider tokenProvider;
     private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(
-        TokenProvider tokenProvider,
-        JHipsterProperties jHipsterProperties,
-        SecurityProblemSupport problemSupport
-    ) {
+    public SecurityConfiguration(TokenProvider tokenProvider, SecurityProblemSupport problemSupport) {
         this.tokenProvider = tokenProvider;
         this.problemSupport = problemSupport;
-        this.jHipsterProperties = jHipsterProperties;
     }
 
     @Bean

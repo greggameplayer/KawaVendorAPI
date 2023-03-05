@@ -1,7 +1,6 @@
 package com.kawa.web.rest;
 
 import com.kawa.repository.VendorRepository;
-import com.kawa.security.AuthoritiesConstants;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;

@@ -3,7 +3,6 @@ package com.kawa.service.impl;
 import com.kawa.domain.Vendor;
 import com.kawa.repository.VendorRepository;
 import com.kawa.security.AuthoritiesConstants;
-import com.kawa.security.SecurityUtils;
 import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;

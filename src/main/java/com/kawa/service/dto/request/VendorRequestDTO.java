@@ -3,7 +3,6 @@ package com.kawa.service.dto.request;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link com.kawa.domain.Vendor} entity.
