@@ -105,7 +105,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void createVendor() throws Exception {
         int databaseSizeBeforeCreate = vendorRepository.findAll().size();
@@ -128,7 +128,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getAllVendors() throws Exception {
         // Initialize the database
@@ -147,7 +147,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getVendor() throws Exception {
         // Initialize the database
@@ -166,7 +166,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getNonExistingVendor() throws Exception {
         // Get the vendor
@@ -174,7 +174,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendor() throws Exception {
         // Initialize the database
@@ -209,7 +209,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithNoUsername() throws Exception {
         // Initialize the database
@@ -234,7 +234,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithNoPassword() throws Exception {
         // Initialize the database
@@ -259,7 +259,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithBlankUsername() throws Exception {
         // Initialize the database
@@ -284,7 +284,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithBlankPassword() throws Exception {
         // Initialize the database
@@ -309,7 +309,7 @@ class VendorResourceIT {
     }
 
     @Test
-    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
+    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void deleteVendor() throws Exception {
         // Initialize the database
