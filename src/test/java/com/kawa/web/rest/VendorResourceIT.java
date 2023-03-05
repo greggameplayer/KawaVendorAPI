@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.kawa.IntegrationTest;
 import com.kawa.domain.Vendor;
 import com.kawa.repository.VendorRepository;
+import com.kawa.security.AuthoritiesConstants;
 import com.kawa.security.SecurityUtils;
 import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.dto.request.VendorRequestDTO;
@@ -104,6 +105,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void createVendor() throws Exception {
         int databaseSizeBeforeCreate = vendorRepository.findAll().size();
@@ -126,6 +128,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getAllVendors() throws Exception {
         // Initialize the database
@@ -144,6 +147,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getVendor() throws Exception {
         // Initialize the database
@@ -162,6 +166,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void getNonExistingVendor() throws Exception {
         // Get the vendor
@@ -169,6 +174,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendor() throws Exception {
         // Initialize the database
@@ -203,6 +209,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithNoUsername() throws Exception {
         // Initialize the database
@@ -227,6 +234,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithNoPassword() throws Exception {
         // Initialize the database
@@ -251,6 +259,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithBlankUsername() throws Exception {
         // Initialize the database
@@ -275,6 +284,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void putExistingVendorWithBlankPassword() throws Exception {
         // Initialize the database
@@ -299,6 +309,7 @@ class VendorResourceIT {
     }
 
     @Test
+    @WithMockUser(roles = { AuthoritiesConstants.ADMIN })
     @Transactional
     void deleteVendor() throws Exception {
         // Initialize the database
