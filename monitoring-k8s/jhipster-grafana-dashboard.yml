@@ -1,8 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jhipster-grafana-dashboard
-  namespace: mspr4
+  name: mspr4-grafana-dashboard
+  namespace: tick
+  labels:
+    app: kawavendorapi
+    grafana_dashboard: "1"
+    release: prometheus
 data:
   deployment-dashboard.json: |
     {
@@ -2272,74 +2276,3 @@ data:
         ],
         "overwrite": true
     }
-  prometheus-datasource.json: |
-    {
-        "access": "proxy",
-        "basicAuth": false,
-        "name": "prometheus",
-        "type": "prometheus",
-        "url": "http://jhipster-prometheus:9090"
-    }
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: jhipster-grafana-dashboard
-  namespace: mspr4
-  labels:
-    job: jhipster-grafana-dashboard
-spec:
-  template:
-    metadata:
-      labels:
-        job: jhipster-grafana-dashboard
-    spec:
-      initContainers:
-        - name: init-dependent-services-check
-          image: busybox
-          command:
-            - '/bin/sh'
-            - '-c'
-            - |
-              until nc -z -w 1 jhipster-prometheus 9090
-              do
-                echo Waiting for prometheus to get initialized
-                sleep 5
-              done
-              until nc -z -w 1 jhipster-grafana 3000
-              do
-                echo Waiting for grafana to get initialized
-                sleep 5
-              done
-      containers:
-        - name: grafana-configurer
-          image: quay.io/coreos/grafana-watcher:v0.0.8
-          args:
-            - '--watch-dir=/var/grafana-dashboard'
-            - '--grafana-url=http://jhipster-grafana:3000'
-          env:
-            - name: GRAFANA_USER
-              valueFrom:
-                secretKeyRef:
-                  name: jhipster-grafana-credentials
-                  key: username
-            - name: GRAFANA_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: jhipster-grafana-credentials
-                  key: password
-          resources:
-            requests:
-              memory: '16Mi'
-              cpu: '50m'
-            limits:
-              memory: '32Mi'
-              cpu: '100m'
-          volumeMounts:
-            - name: grafana-dashboard
-              mountPath: /var/grafana-dashboard
-      volumes:
-        - name: grafana-dashboard
-          configMap:
-            name: jhipster-grafana-dashboard
-      restartPolicy: OnFailure

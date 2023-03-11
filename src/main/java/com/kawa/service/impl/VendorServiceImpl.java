@@ -13,6 +13,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,18 +41,25 @@ public class VendorServiceImpl implements VendorService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JavaMailSender javaMailSender;
+
+    @Value("${email-service.username}")
+    private String senderEmail;
+
     public VendorServiceImpl(
         VendorRepository vendorRepository,
         VendorResponseMapper vendorResponseMapper,
         VendorRequestMapper vendorRequestMapper,
         TokenProvider tokenProvider,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        JavaMailSender javaMailSender
     ) {
         this.vendorRepository = vendorRepository;
         this.vendorResponseMapper = vendorResponseMapper;
         this.vendorRequestMapper = vendorRequestMapper;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -66,6 +76,24 @@ public class VendorServiceImpl implements VendorService {
         vendor.setToken(jwt);
         vendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
         vendor = vendorRepository.save(vendor);
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(vendor.getEmail());
+        msg.setFrom(senderEmail);
+        msg.setSubject("Welcome to Kawa");
+        msg.setText(
+            "Hello " +
+            vendor.getName() +
+            ",\n\n" +
+            "Welcome to Kawa. Your account has been created successfully. Please use the following token to login to your account.\n\n" +
+            "Token: " +
+            vendor.getToken() +
+            "\n\n" +
+            "Regards,\n" +
+            "Kawa Team"
+        );
+        javaMailSender.send(msg);
+
         return vendorResponseMapper.toDto(vendor);
     }
 

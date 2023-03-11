@@ -51,11 +51,15 @@ class VendorResourceIT {
     private static final String DEFAULT_PASSWORD = "AAAAAAAAAA";
     private static final String UPDATED_PASSWORD = "BBBBBBBBBB";
 
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA@gmail.com";
+
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB@gmail.com";
+
     private static final String ENTITY_API_URL = "/api/vendors";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static final Random random = new Random();
-    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static AtomicLong count = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
 
     @Autowired
     private VendorRepository vendorRepository;
@@ -79,24 +83,32 @@ class VendorResourceIT {
 
     /**
      * Create an entity for this test.
-     *
+     * <hr>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
     public static Vendor createEntity(EntityManager em) {
-        Vendor vendor = new Vendor().token(DEFAULT_TOKEN).name(DEFAULT_NAME).username(DEFAULT_USERNAME).password(DEFAULT_PASSWORD);
-        return vendor;
+        return new Vendor()
+            .token(DEFAULT_TOKEN)
+            .name(DEFAULT_NAME)
+            .username(DEFAULT_USERNAME)
+            .password(DEFAULT_PASSWORD)
+            .email(DEFAULT_EMAIL);
     }
 
     /**
      * Create an updated entity for this test.
-     *
+     * <hr>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
     public static Vendor createUpdatedEntity(EntityManager em) {
-        Vendor vendor = new Vendor().token(UPDATED_TOKEN).name(UPDATED_NAME);
-        return vendor;
+        return new Vendor()
+            .token(UPDATED_TOKEN)
+            .name(UPDATED_NAME)
+            .email(UPDATED_EMAIL)
+            .username(UPDATED_USERNAME)
+            .password(UPDATED_PASSWORD);
     }
 
     @BeforeEach
@@ -124,6 +136,7 @@ class VendorResourceIT {
         assertTrue(tokenProvider.validateToken(testVendor.getToken()));
         assertThat(testVendor.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testVendor.getUsername()).isEqualTo(DEFAULT_USERNAME);
+        assertThat(testVendor.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertTrue(passwordEncoder.matches(DEFAULT_PASSWORD, testVendor.getPassword()));
     }
 
@@ -142,6 +155,7 @@ class VendorResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(vendor.getId().intValue())))
             .andExpect(jsonPath("$.[*].token").value(hasItem(DEFAULT_TOKEN)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME)))
             .andExpect(jsonPath("$.[*].password").value(hasItem(DEFAULT_PASSWORD)));
     }
@@ -161,6 +175,7 @@ class VendorResourceIT {
             .andExpect(jsonPath("$.id").value(vendor.getId().intValue()))
             .andExpect(jsonPath("$.token").value(DEFAULT_TOKEN))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME))
             .andExpect(jsonPath("$.password").value(DEFAULT_PASSWORD));
     }
@@ -186,9 +201,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME);
-        updatedVendor.username(UPDATED_USERNAME);
-        updatedVendor.password(UPDATED_PASSWORD);
+        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password(UPDATED_PASSWORD).email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
@@ -204,6 +217,7 @@ class VendorResourceIT {
         assertThat(vendorList).hasSize(databaseSizeBeforeUpdate);
         Vendor testVendor = vendorList.get(vendorList.size() - 1);
         assertThat(testVendor.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testVendor.getEmail()).isEqualTo(UPDATED_EMAIL);
         assertThat(testVendor.getUsername()).isEqualTo(UPDATED_USERNAME);
         assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, testVendor.getPassword()));
     }
@@ -219,9 +233,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME);
-        updatedVendor.username(null);
-        updatedVendor.password(UPDATED_PASSWORD);
+        updatedVendor.name(UPDATED_NAME).username(null).password(UPDATED_PASSWORD).email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
@@ -244,9 +256,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME);
-        updatedVendor.username(UPDATED_USERNAME);
-        updatedVendor.password(null);
+        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password(null).email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
@@ -269,9 +279,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME);
-        updatedVendor.username(UPDATED_USERNAME);
-        updatedVendor.password("");
+        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password("").email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
@@ -294,9 +302,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME);
-        updatedVendor.username(UPDATED_USERNAME);
-        updatedVendor.password("");
+        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password("").email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc

@@ -1,6 +1,7 @@
 package com.kawa.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -29,6 +30,10 @@ public class Vendor implements Serializable {
 
     @Column(name = "name")
     private String name;
+
+    @NotNull
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @NotNull
     @Column(name = "username", nullable = false, unique = true)
@@ -73,6 +78,19 @@ public class Vendor implements Serializable {
     public Vendor name(String name) {
         this.setName(name);
         return this;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public Vendor email(String email) {
+        this.setEmail(email);
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setName(String name) {
@@ -125,14 +143,16 @@ public class Vendor implements Serializable {
     }
 
     // prettier-ignore
+
     @Override
     public String toString() {
         return "Vendor{" +
-            "id=" + getId() +
-            ", token='" + getToken() + "'" +
-            ", name='" + getName() + "'" +
-            ", username='" + getUsername() + "'" +
-            ", password='" + getPassword() + "'" +
-            "}";
+            "id=" + id +
+            ", token='" + token + '\'' +
+            ", name='" + name + '\'' +
+            ", email='" + email + '\'' +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            '}';
     }
 }

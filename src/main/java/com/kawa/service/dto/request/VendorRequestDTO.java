@@ -13,6 +13,9 @@ public class VendorRequestDTO implements Serializable {
     private String name;
 
     @NotBlank
+    private String email;
+
+    @NotBlank
     private String username;
 
     @NotBlank
@@ -24,6 +27,14 @@ public class VendorRequestDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {
@@ -45,22 +56,26 @@ public class VendorRequestDTO implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VendorRequestDTO)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         VendorRequestDTO that = (VendorRequestDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(username, that.username) && Objects.equals(password, that.password);
+        return (
+            Objects.equals(name, that.name) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, username, password);
+        return Objects.hash(name, email, username, password);
     }
 
     // prettier-ignore
+
 
     @Override
     public String toString() {
         return "VendorRequestDTO{" +
             "name='" + name + '\'' +
+            ", email='" + email + '\'' +
             ", username='" + username + '\'' +
             ", password='" + password + '\'' +
             '}';

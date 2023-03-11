@@ -19,6 +19,8 @@ logging:
     tech.jhipster: DEBUG
     org.hibernate.SQL: DEBUG
     com.kawa: DEBUG
+    org.apache: INFO
+    com.netflix: INFO
 
 eureka:
   instance:
