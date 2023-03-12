@@ -15,7 +15,9 @@ public class MailConfiguration {
         @Value("${email-service.host}") String host,
         @Value("${email-service.port}") int port,
         @Value("${email-service.username}") String username,
-        @Value("${email-service.password}") String password
+        @Value("${email-service.password}") String password,
+        @Value("${email-service.starttls.enable}") boolean starttlsEnable,
+        @Value("${email-service.starttls.required}") boolean starttlsRequired
     ) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
@@ -26,8 +28,8 @@ public class MailConfiguration {
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.smtp.starttls.enable", starttlsEnable);
+        props.put("mail.smtp.starttls.required", starttlsRequired);
 
         return mailSender;
     }

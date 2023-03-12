@@ -1,28 +1,31 @@
 package com.kawa.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import com.kawa.IntegrationTest;
 import com.kawa.domain.Vendor;
 import com.kawa.repository.VendorRepository;
 import com.kawa.security.AuthoritiesConstants;
-import com.kawa.security.SecurityUtils;
 import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.mapper.VendorRequestMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
-import javax.validation.ConstraintViolationException;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -34,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Integration tests for the {@link VendorResource} REST controller.
  */
+
 @IntegrationTest
 @AutoConfigureMockMvc
 @WithMockUser
@@ -81,6 +85,11 @@ class VendorResourceIT {
 
     private Vendor vendor;
 
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("duke", "springboot"))
+        .withPerMethodLifecycle(false);
+
     /**
      * Create an entity for this test.
      * <hr>
@@ -116,7 +125,13 @@ class VendorResourceIT {
         vendor = createEntity(em);
     }
 
+    @BeforeAll
+    public static void init() {
+        greenMail.setUser(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+    }
+
     @Test
+    @Timeout(30)
     @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
     void createVendor() throws Exception {
@@ -138,6 +153,9 @@ class VendorResourceIT {
         assertThat(testVendor.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(testVendor.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertTrue(passwordEncoder.matches(DEFAULT_PASSWORD, testVendor.getPassword()));
+
+        MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
+        assertThat(receivedMessage.getSubject()).isEqualTo("Welcome to Kawa");
     }
 
     @Test
