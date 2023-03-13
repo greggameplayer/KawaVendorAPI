@@ -15,11 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @IntegrationTest
-@AutoConfigureMockMvc
+@Timeout(30)
 public class MailConfigurationTest {
 
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA@gmail.com";
