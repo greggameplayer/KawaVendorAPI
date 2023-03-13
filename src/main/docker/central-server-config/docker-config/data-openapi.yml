@@ -1,0 +1,604 @@
+openapi: 3.0.1
+info:
+  title: KawaAPIMock
+  description: defaultDescription
+  version: '0.3'
+paths:
+  /customers/{id}:
+    get:
+      description: Auto generated using Swagger Inspector
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    x-faker: date.past
+                    format: 'date-time'
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  address:
+                    type: object
+                    properties:
+                      city:
+                        type: string
+                      postalCode:
+                        type: integer
+                  profile:
+                    type: object
+                    properties:
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                  name:
+                    type: string
+                  company:
+                    type: object
+                    properties:
+                      companyName:
+                        type: string
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        createdAt:
+                          type: string
+                          x-faker: date.past
+                          format: 'date-time'
+                        customerId:
+                          type: integer
+                        id:
+                          type: integer
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  username:
+                    type: string
+              examples:
+                3:
+                  value:
+                    createdAt: '2023-02-20T04:16:24.968Z'
+                    name: 'Jean Magie'
+                    username: 'theMagician'
+                    firstName: 'Jean'
+                    lastName: 'Magie'
+                    address:
+                      postalCode: 75001
+                      city: 'PARIS'
+                    profile:
+                      firstName: 'Jean'
+                      lastName: 'Magie'
+                    company:
+                      companyName: 'poudlardCompany'
+                    id: 3
+                    email: 'jean.magie@gmail.com'
+                    orders:
+                      - createdAt: '2023-02-20T13:16:04.430Z'
+                        id: 3
+                        customerId: 3
+                      - createdAt: '2023-02-20T00:49:24.786Z'
+                        id: 53
+                        customerId: 3
+                4:
+                  value:
+                    createdAt: '2023-02-22T04:16:24.968Z'
+                    name: 'Christophe Bigz'
+                    username: 'theBigz'
+                    firstName: 'Christophe'
+                    lastName: 'Bigz'
+                    address:
+                      postalCode: 75001
+                      city: 'PARIS'
+                    profile:
+                      firstName: 'Christophe'
+                      lastName: 'Bigz'
+                    company:
+                      companyName: 'Bigz&CO'
+                    id: 4
+                    email: 'christophe.bigz@gmail.com'
+                    orders:
+                      - createdAt: '2023-02-20T13:16:04.430Z'
+                        id: 4
+                        customerId: 4
+                      - createdAt: '2023-02-20T00:49:24.786Z'
+                        id: 54
+                        customerId: 4
+  /orders:
+    get:
+      description: Auto generated using Swagger Inspector
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - createdAt
+                    - id
+                    - customerId
+                  properties:
+                    createdAt:
+                      type: string
+                      x-faker: date.past
+                      format: 'date-time'
+                    id:
+                      type: integer
+                    customerId:
+                      type: integer
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        createdAt:
+                          type: string
+                          x-faker: date.past
+                          format: 'date-time'
+                        name:
+                          type: string
+                          x-faker:
+                          helpers.arrayElement:
+                            - ['test', 'la baguette de jean magie', 'petit bonbon']
+                        details:
+                          type: object
+                          required:
+                            - price
+                            - description
+                            - color
+                          properties:
+                            price:
+                              type: number
+                            description:
+                              type: string
+                            color:
+                              type: string
+                        stock:
+                          type: integer
+                        id:
+                          type: integer
+              examples:
+                example1:
+                  value:
+                    - createdAt: '2023-02-20T13:16:04.430Z'
+                      id: 3
+                      customerId: 3
+                      products:
+                        - createdAt: '2023-02-20T02:07:21.849Z'
+                          name: 'Chrichri'
+                          details:
+                            price: 172.00
+                            description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                            color: 'yellow'
+                          id: 3
+                          stock: 5
+                        - createdAt: '2023-02-20T13:26:44.811Z'
+                          name: 'jeanjean'
+                          details:
+                            price: 150.00
+                            description: 'Une baguette hyper puissante'
+                            color: 'red'
+                          id: 4
+                          stock: 6
+                    - createdAt: '2023-02-20T00:49:24.786Z'
+                      id: 53
+                      customerId: 3
+                      products:
+                        - createdAt: '2023-02-20T02:07:21.849Z'
+                          name: 'Chrichri'
+                          details:
+                            price: 172.00
+                            description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                            color: 'yellow'
+                          id: 3
+                          stock: 5
+                        - createdAt: '2023-02-20T13:26:44.811Z'
+                          name: 'jeanjean'
+                          details:
+                            price: 150.00
+                            description: 'Une baguette hyper puissante'
+                            color: 'red'
+                          id: 4
+                          stock: 6
+  /orders/{id}:
+    get:
+      description: Auto generated using Swagger Inspector
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - createdAt
+                  - customerId
+                  - id
+                  - products
+                properties:
+                  createdAt:
+                    type: string
+                    x-faker: date.past
+                    format: 'date-time'
+                  customerId:
+                    type: integer
+                  id:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      createdAt:
+                        type: string
+                        x-faker: date.past
+                        format: 'date-time'
+                      name:
+                        type: string
+                        x-faker:
+                        helpers.arrayElement:
+                          - ['test', 'la baguette de jean magie', 'petit bonbon']
+                      details:
+                        type: object
+                        required:
+                          - price
+                          - description
+                          - color
+                        properties:
+                          price:
+                            type: number
+                          description:
+                            type: string
+                          color:
+                            type: string
+                      stock:
+                        type: integer
+                      id:
+                        type: integer
+              examples:
+                example1:
+                  value:
+                    createdAt: '2023-02-20T13:16:04.430Z'
+                    id: 3
+                    customerId: 3
+                    products:
+                      - createdAt: '2023-02-20T02:07:21.849Z'
+                        name: 'Chrichri'
+                        details:
+                          price: 172.00
+                          description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                          color: 'yellow'
+                        id: 3
+                        stock: 5
+                      - createdAt: '2023-02-20T13:26:44.811Z'
+                        name: 'jeanjean'
+                        details:
+                          price: 150.00
+                          description: 'Une baguette hyper puissante'
+                          color: 'red'
+                        id: 4
+                        stock: 6
+  /products:
+    get:
+      description: Auto generated using Swagger Inspector
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - createdAt
+                    - name
+                    - details
+                    - stock
+                    - id
+                  properties:
+                    createdAt:
+                      type: string
+                      x-faker: date.past
+                      format: 'date-time'
+                    name:
+                      type: string
+                      x-faker:
+                        helpers.arrayElement:
+                          - ['test', 'la baguette de jean magie', 'petit bonbon']
+                    details:
+                      type: object
+                      required:
+                        - price
+                        - description
+                        - color
+                      properties:
+                        price:
+                          type: number
+                        description:
+                          type: string
+                        color:
+                          type: string
+                    stock:
+                      type: integer
+                    id:
+                      type: integer
+
+              examples:
+                example1:
+                  value:
+                    - createdAt: '2023-02-20T02:07:21.849Z'
+                      name: 'Christopher Ankunding I'
+                      details:
+                        price: 172.00
+                        description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                        color: 'yellow'
+                      id: 3
+                      stock: 5
+                    - createdAt: '2023-02-20T13:26:44.811Z'
+                      name: 'La baguette de jean magie'
+                      details:
+                        price: 150.00
+                        description: 'Une baguette hyper puissante'
+                        color: 'red'
+                      id: 4
+                      stock: 6
+                example2:
+                  value:
+                    - createdAt: '2023-02-20T02:07:21.849Z'
+                      name: 'Chrichri'
+                      details:
+                        price: 172.00
+                        description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                        color: 'yellow'
+                      id: 3
+                      stock: 5
+                    - createdAt: '2023-02-20T13:26:44.811Z'
+                      name: 'jeanjean'
+                      details:
+                        price: 150.00
+                        description: 'Une baguette hyper puissante'
+                        color: 'red'
+                      id: 4
+                      stock: 6
+  /products/{id}:
+    get:
+      description: Auto generated using Swagger Inspector
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - createdAt
+                  - name
+                  - details
+                  - stock
+                  - id
+                properties:
+                  createdAt:
+                    type: string
+                    x-faker: date.past
+                    format: 'date-time'
+                  name:
+                    type: string
+                    x-faker:
+                      helpers.arrayElement:
+                        - ['test', 'la baguette de jean magie', 'petit bonbon']
+                  details:
+                    type: object
+                    required:
+                      - price
+                      - description
+                      - color
+                    properties:
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      color:
+                        type: string
+                  stock:
+                    type: integer
+                  id:
+                    type: integer
+              examples:
+                example1:
+                  value:
+                    - createdAt: '2023-02-20T02:07:21.849Z'
+                      name: 'Christopher Ankunding I'
+                      details:
+                        price: 172.00
+                        description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                        color: 'yellow'
+                      id: 3
+                      stock: 5
+                    - createdAt: '2023-02-20T13:26:44.811Z'
+                      name: 'La baguette de jean magie'
+                      details:
+                        price: 150.00
+                        description: 'Une baguette hyper puissante'
+                        color: 'red'
+                      id: 4
+                      stock: 6
+                example2:
+                  value:
+                    - createdAt: '2023-02-20T02:07:21.849Z'
+                      name: 'Chrichri'
+                      details:
+                        price: 172.00
+                        description: 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals'
+                        color: 'yellow'
+                      id: 3
+                      orderId: 3
+                      stock: 5
+                    - createdAt: '2023-02-20T13:26:44.811Z'
+                      name: 'jeanjean'
+                      details:
+                        price: 150.00
+                        description: 'Une baguette hyper puissante'
+                        color: 'red'
+                      id: 4
+                      orderId: 4
+                      stock: 6
+  /customers:
+    get:
+      description: Auto generated using Swagger Inspector
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - createdAt
+                    - name
+                    - username
+                    - firstName
+                    - lastName
+                    - address
+                    - profile
+                    - company
+                    - id
+                    - email
+                    - orders
+                  properties:
+                    createdAt:
+                      type: string
+                      x-faker: date.past
+                      format: 'date-time'
+                    name:
+                      type: string
+                    username:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    address:
+                      type: object
+                      required:
+                        - postalCode
+                        - city
+                      properties:
+                        postalCode:
+                          type: integer
+                        city:
+                          type: string
+                    profile:
+                      type: object
+                      required:
+                        - firstName
+                        - lastName
+                      properties:
+                        firstName:
+                          type: string
+                        lastName:
+                          type: string
+                    company:
+                      type: object
+                      required:
+                        - companyName
+                      properties:
+                        companyName:
+                          type: string
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                    orders:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - createdAt
+                          - id
+                          - customerId
+                        properties:
+                          createdAt:
+                            type: string
+                            x-faker: date.past
+                            format: 'date-time'
+                          id:
+                            type: integer
+                          customerId:
+                            type: integer
+              examples:
+                example1:
+                  value:
+                    - createdAt: '2023-02-20T04:16:24.968Z'
+                      name: 'Jean Magie'
+                      username: 'theMagician'
+                      firstName: 'Jean'
+                      lastName: 'Magie'
+                      address:
+                        postalCode: 75001
+                        city: 'PARIS'
+                      profile:
+                        firstName: 'Jean'
+                        lastName: 'Magie'
+                      company:
+                        companyName: 'poudlardCompany'
+                      id: 3
+                      email: 'jean.magie@gmail.com'
+                      orders:
+                        - createdAt: '2023-02-20T13:16:04.430Z'
+                          id: 3
+                          customerId: 3
+                        - createdAt: '2023-02-20T00:49:24.786Z'
+                          id: 53
+                          customerId: 3
+                    - createdAt: '2023-02-22T04:16:24.968Z'
+                      name: 'Christophe Bigz'
+                      username: 'CBigz'
+                      firstName: 'Christophe'
+                      lastName: 'Bigz'
+                      address:
+                        postalCode: 75001
+                        city: 'PARIS'
+                      profile:
+                        firstName: 'Christophe'
+                        lastName: 'Bigz'
+                      company:
+                        companyName: 'Bigz&CO'
+                      id: 4
+                      email: 'christophe.bigz@gmail.com'
+                      orders:
+                        - createdAt: '2023-02-20T13:16:04.430Z'
+                          id: 4
+                          customerId: 4
+                        - createdAt: '2023-02-20T00:49:24.786Z'
+                          id: 54
+                          customerId: 4
