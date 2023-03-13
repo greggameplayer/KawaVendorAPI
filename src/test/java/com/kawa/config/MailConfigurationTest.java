@@ -16,9 +16,10 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.ActiveProfiles;
 
 @IntegrationTest
-@Timeout(30)
+@ActiveProfiles("no-liquibase")
 public class MailConfigurationTest {
 
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA@gmail.com";
