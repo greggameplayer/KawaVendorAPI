@@ -46,7 +46,7 @@ spec:
               done
       containers:
         - name: kawavendorapi-app
-          image: registry.gregsvc.fr/kawa-vendor-api/kawavendorapi
+          image: registry.gregsvc.fr/kawa-vendor-api:@_DOCKER_VERSION_@
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
