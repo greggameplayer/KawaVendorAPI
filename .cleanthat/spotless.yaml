@@ -54,7 +54,7 @@ formatters:
       expandEmptyElements: true
       spaceBeforeCloseEmptyElement: false
       keepBlankLines: true
-      nrOfIndentSpace: 2
+      nrOfIndentSpace: 4
       indentBlankLines: false
       indentSchemaLocation: false
       predefinedSortOrder: "recommended_2008_06"
