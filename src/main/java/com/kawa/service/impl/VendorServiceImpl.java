@@ -1,21 +1,26 @@
 package com.kawa.service.impl;
 
+import com.google.zxing.WriterException;
 import com.kawa.domain.Vendor;
 import com.kawa.repository.VendorRepository;
 import com.kawa.security.AuthoritiesConstants;
 import com.kawa.security.jwt.TokenProvider;
+import com.kawa.service.EmailService;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
 import com.kawa.service.mapper.VendorRequestMapper;
 import com.kawa.service.mapper.VendorResponseMapper;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +46,7 @@ public class VendorServiceImpl implements VendorService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JavaMailSender javaMailSender;
+    private final EmailService emailService;
 
     @Value("${email-service.username}")
     private String senderEmail;
@@ -52,18 +57,18 @@ public class VendorServiceImpl implements VendorService {
         VendorRequestMapper vendorRequestMapper,
         TokenProvider tokenProvider,
         PasswordEncoder passwordEncoder,
-        JavaMailSender javaMailSender
+        EmailService emailService
     ) {
         this.vendorRepository = vendorRepository;
         this.vendorResponseMapper = vendorResponseMapper;
         this.vendorRequestMapper = vendorRequestMapper;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
-        this.javaMailSender = javaMailSender;
+        this.emailService = emailService;
     }
 
     @Override
-    public VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) {
+    public VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) throws IOException, WriterException, MessagingException {
         log.debug("Request to save Vendor : {}", vendorRequestDTO);
         // create a jwt token for the vendor
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -77,22 +82,28 @@ public class VendorServiceImpl implements VendorService {
         vendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
         vendor = vendorRepository.save(vendor);
 
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(vendor.getEmail());
-        msg.setFrom(senderEmail);
-        msg.setSubject("Welcome to Kawa");
-        msg.setText(
-            "Hello " +
-            vendor.getName() +
-            ",\n\n" +
-            "Welcome to Kawa. Your account has been created successfully. Please use the following token to login to your account.\n\n" +
-            "Token: " +
-            vendor.getToken() +
-            "\n\n" +
-            "Regards,\n" +
-            "Kawa Team"
+        File qrCode = emailService.generateQRCode(jwt);
+
+        String base64QrCode = DatatypeConverter.printBase64Binary(Files.readAllBytes(qrCode.toPath()));
+
+        Map<String, Object> templateModel = new HashMap<>();
+
+        templateModel.put("vendor", vendor.getName());
+        templateModel.put("token", jwt);
+        templateModel.put("qrCode", base64QrCode);
+
+        Map<String, File> attachments = new HashMap<>();
+
+        emailService.sendEmailFromTemplate(
+            vendor.getEmail(),
+            "Bienvenue chez Paye ton Kawa",
+            "new-vendor.ftlh",
+            templateModel,
+            true,
+            true,
+            attachments
         );
-        javaMailSender.send(msg);
+        Files.delete(qrCode.toPath());
 
         return vendorResponseMapper.toDto(vendor);
     }

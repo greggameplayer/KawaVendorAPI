@@ -23,6 +23,9 @@ eureka:
 spring:
   application:
     name: KawaVendorAPI
+  freemarker:
+    suffix: .ftlh
+    template-loader-path: classpath:/templates
   cloud:
     config:
       enabled: false

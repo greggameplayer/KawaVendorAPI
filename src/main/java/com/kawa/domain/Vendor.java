@@ -1,7 +1,6 @@
 package com.kawa.domain;
 
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;

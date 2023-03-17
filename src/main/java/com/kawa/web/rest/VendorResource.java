@@ -1,15 +1,18 @@
 package com.kawa.web.rest;
 
+import com.google.zxing.WriterException;
 import com.kawa.repository.VendorRepository;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
 import com.kawa.web.rest.errors.BadRequestAlertException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +54,13 @@ public class VendorResource {
      * @param vendorRequestDTO the vendorDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new vendorDTO, or with status {@code 400 (Bad Request)} if the vendor has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws MessagingException if the email could not be sent.
+     * @throws IOException if the QR code could not be written to a file.
+     * @throws WriterException if the QR code could not be generated.
      */
     @PostMapping("/vendors")
-    public ResponseEntity<VendorResponseDTO> createVendor(@Valid @RequestBody VendorRequestDTO vendorRequestDTO) throws URISyntaxException {
+    public ResponseEntity<VendorResponseDTO> createVendor(@Valid @RequestBody VendorRequestDTO vendorRequestDTO)
+        throws URISyntaxException, MessagingException, IOException, WriterException {
         log.debug("REST request to save Vendor : {}", vendorRequestDTO);
         VendorResponseDTO result = vendorService.save(vendorRequestDTO);
         return ResponseEntity

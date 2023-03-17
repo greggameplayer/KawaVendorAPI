@@ -19,6 +19,7 @@ import com.kawa.service.mapper.VendorRequestMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +27,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -58,6 +63,8 @@ class VendorResourceIT {
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA@gmail.com";
 
     private static final String UPDATED_EMAIL = "BBBBBBBBBB@gmail.com";
+
+    private static final String DEFAULT_EMAIL_SUBJECT = "Bienvenue chez Paye ton Kawa";
 
     private static final String ENTITY_API_URL = "/api/vendors";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -130,6 +137,15 @@ class VendorResourceIT {
         greenMail.setUser(DEFAULT_EMAIL, DEFAULT_PASSWORD);
     }
 
+    private static Stream<Arguments> provideArgsForPutExistingVendorWithBadValues() {
+        return Stream.of(
+            Arguments.of(null, UPDATED_PASSWORD),
+            Arguments.of(UPDATED_EMAIL, null),
+            Arguments.of("", UPDATED_PASSWORD),
+            Arguments.of(UPDATED_EMAIL, "")
+        );
+    }
+
     @Test
     @Timeout(30)
     @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
@@ -155,7 +171,7 @@ class VendorResourceIT {
         assertTrue(passwordEncoder.matches(DEFAULT_PASSWORD, testVendor.getPassword()));
 
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
-        assertThat(receivedMessage.getSubject()).isEqualTo("Welcome to Kawa");
+        assertThat(receivedMessage.getSubject()).isEqualTo(DEFAULT_EMAIL_SUBJECT);
     }
 
     @Test
@@ -240,10 +256,11 @@ class VendorResourceIT {
         assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, testVendor.getPassword()));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
     @Transactional
-    void putExistingVendorWithNoUsername() throws Exception {
+    @MethodSource("provideArgsForPutExistingVendorWithBadValues")
+    void putExistingVendorWithBadValues(String username, String password) throws Exception {
         // Initialize the database
         vendorRepository.saveAndFlush(vendor);
 
@@ -251,76 +268,7 @@ class VendorResourceIT {
         Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
         // Disconnect from session so that the updates on updatedVendor are not directly saved in db
         em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME).username(null).password(UPDATED_PASSWORD).email(UPDATED_EMAIL);
-        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
-
-        restVendorMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, updatedVendor.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
-            )
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
-    @Transactional
-    void putExistingVendorWithNoPassword() throws Exception {
-        // Initialize the database
-        vendorRepository.saveAndFlush(vendor);
-
-        // Update the vendor
-        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
-        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
-        em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password(null).email(UPDATED_EMAIL);
-        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
-
-        restVendorMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, updatedVendor.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
-            )
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
-    @Transactional
-    void putExistingVendorWithBlankUsername() throws Exception {
-        // Initialize the database
-        vendorRepository.saveAndFlush(vendor);
-
-        // Update the vendor
-        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
-        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
-        em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password("").email(UPDATED_EMAIL);
-        VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
-
-        restVendorMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, updatedVendor.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(vendorRequestDTO))
-            )
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(authorities = { AuthoritiesConstants.ADMIN })
-    @Transactional
-    void putExistingVendorWithBlankPassword() throws Exception {
-        // Initialize the database
-        vendorRepository.saveAndFlush(vendor);
-
-        // Update the vendor
-        Vendor updatedVendor = vendorRepository.findById(vendor.getId()).get();
-        // Disconnect from session so that the updates on updatedVendor are not directly saved in db
-        em.detach(updatedVendor);
-        updatedVendor.name(UPDATED_NAME).username(UPDATED_USERNAME).password("").email(UPDATED_EMAIL);
+        updatedVendor.name(UPDATED_NAME).username(username).password(password).email(UPDATED_EMAIL);
         VendorRequestDTO vendorRequestDTO = vendorRequestMapper.toDto(updatedVendor);
 
         restVendorMockMvc
