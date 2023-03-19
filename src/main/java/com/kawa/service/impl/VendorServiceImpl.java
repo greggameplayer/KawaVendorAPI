@@ -77,7 +77,7 @@ public class VendorServiceImpl implements VendorService {
             Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
         );
         Vendor vendor = vendorRequestMapper.toEntity(vendorRequestDTO);
-        String jwt = tokenProvider.createToken(authentication, false);
+        String jwt = tokenProvider.createToken(authentication, true);
         vendor.setToken(jwt);
         vendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
         vendor = vendorRepository.save(vendor);

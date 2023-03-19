@@ -35,20 +35,7 @@
     </style>
 </head>
 <body>
-<table>
-    <tr>
-        <td>
-            <h3>Bonjour ${vendor}, bienvenue chez Paye ton kawa,</h3> <br>
-            <p>Veuillez-vous authentifier grâce au QRCode ci-dessous :</p> <img src="data:image/png;base64,${qrCode}" alt=""> <br>
-            <p>Vous pouvez aussi vous authentifier grâce au token ci-dessous :</p>
-            <p>${token}</p> <br>
-            <p>Si vous n’êtes pas à l’origine de cette demande, veuillez ignorer ce mail.</p>
-            <p>Cordialement,</p>
-            <p><span>L’équipe Paye ton kawa</span></p>
-        </td>
-    </tr>
-</table>
-
+<p>Bonjour ${name}</p>
 </body>
 
 </html>

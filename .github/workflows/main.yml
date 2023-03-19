@@ -1,5 +1,5 @@
 name: Application CI
-on: [push, pull_request]
+on: [push]
 jobs:
   pipeline:
     name: KawaVendorAPI pipeline

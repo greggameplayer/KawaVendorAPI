@@ -11,11 +11,14 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.*;
 import java.util.Map;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Part;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -45,16 +48,32 @@ public class EmailServiceImpl implements EmailService {
         Map<String, File> inlineAttachments
     ) throws MessagingException, IOException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, isMultipart, "UTF-8");
-        helper.setFrom(from);
-        helper.setTo(to);
-        helper.setSubject(subject);
-        if (inlineAttachments != null) {
-            for (Map.Entry<String, File> entry : inlineAttachments.entrySet()) {
-                helper.addInline(entry.getKey(), entry.getValue());
+        mimeMessage.setFrom(from);
+        mimeMessage.addRecipients(Message.RecipientType.TO, to);
+        mimeMessage.setSubject(subject);
+
+        if (isMultipart) {
+            MimeMultipart multipart = new MimeMultipart("related");
+
+            MimeBodyPart text = new MimeBodyPart();
+            text.setContent(content, (isHtml) ? "text/html" : "text/plain");
+            text.setHeader("Content-Type", ((isHtml) ? "text/html" : "text/plain") + "; charset=UTF-8");
+
+            multipart.addBodyPart(text);
+
+            if (inlineAttachments != null) {
+                for (Map.Entry<String, File> entry : inlineAttachments.entrySet()) {
+                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                    mimeBodyPart.attachFile(entry.getValue());
+                    mimeBodyPart.setContentID("<" + entry.getKey() + ">");
+                    mimeBodyPart.setDisposition(Part.INLINE);
+                    multipart.addBodyPart(mimeBodyPart);
+                }
             }
+            mimeMessage.setContent(multipart);
+        } else {
+            mimeMessage.setText(content, "UTF-8", (isHtml) ? "html" : "plain");
         }
-        helper.setText(content, isHtml);
 
         javaMailSender.send(mimeMessage);
     }
@@ -85,6 +104,7 @@ public class EmailServiceImpl implements EmailService {
         Map<String, File> inlineAttachments
     ) throws MessagingException {
         try {
+            freemarkerConfigurer.setDefaultEncoding("UTF-8");
             Template content = freemarkerConfigurer.getConfiguration().getTemplate(templateName);
             String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(content, templateModel);
             sendEmail(to, subject, htmlBody, isMultipart, isHtml, inlineAttachments);

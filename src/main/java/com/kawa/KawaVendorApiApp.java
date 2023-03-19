@@ -162,6 +162,6 @@ public class KawaVendorApiApp {
             Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.ADMIN))
         );
 
-        defaultUserToken = tokenProvider.createToken(authentication, true);
+        defaultUserToken = tokenProvider.createToken(authentication, false);
     }
 }
