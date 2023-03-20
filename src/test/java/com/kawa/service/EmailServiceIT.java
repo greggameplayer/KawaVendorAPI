@@ -34,7 +34,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 @IntegrationTest
 @AutoConfigureMockMvc
 @WithMockUser
-public class EmailServiceTest {
+public class EmailServiceIT {
 
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA@gmail.com";
 
