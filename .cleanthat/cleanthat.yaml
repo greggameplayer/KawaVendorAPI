@@ -30,4 +30,3 @@ engines:
     parameters:
       recipes:
       - "org.openrewrite.java.RemoveUnusedImports"
-      - "org.openrewrite.java.security.JavaSecurityBestPractices"
