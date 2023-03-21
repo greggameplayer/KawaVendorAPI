@@ -56,7 +56,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMultipart multipart = new MimeMultipart("related");
 
             MimeBodyPart text = new MimeBodyPart();
-            text.setContent(content, (isHtml) ? "text/html" : "text/plain");
+            text.setContent(content, ((isHtml) ? "text/html" : "text/plain") + "; charset=UTF-8");
             text.setHeader("Content-Type", ((isHtml) ? "text/html" : "text/plain") + "; charset=UTF-8");
 
             multipart.addBodyPart(text);
