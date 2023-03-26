@@ -2,6 +2,7 @@ package com.kawa.service.dto.response;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.Instant;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,11 @@ class VendorTokenValidityResponseDTOTest {
     void dtoEqualsVerifier() {
         Date date = new Date();
         VendorTokenValidityResponseDTO vendorTokenValidityResponseDTO1 = new VendorTokenValidityResponseDTO(true, true, date);
-        VendorTokenValidityResponseDTO vendorTokenValidityResponseDTO2 = new VendorTokenValidityResponseDTO(true, true, new Date());
+        VendorTokenValidityResponseDTO vendorTokenValidityResponseDTO2 = new VendorTokenValidityResponseDTO(
+            true,
+            true,
+            Date.from(Instant.now().plusSeconds(150))
+        );
         assertThat(vendorTokenValidityResponseDTO1).isNotEqualTo(vendorTokenValidityResponseDTO2);
         vendorTokenValidityResponseDTO2.setExpiryDate(date);
         assertThat(vendorTokenValidityResponseDTO1).isEqualTo(vendorTokenValidityResponseDTO2);
