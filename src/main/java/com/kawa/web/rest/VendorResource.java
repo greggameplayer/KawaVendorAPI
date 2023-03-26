@@ -4,7 +4,9 @@ import com.google.zxing.WriterException;
 import com.kawa.repository.VendorRepository;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
+import com.kawa.service.dto.request.VendorTokenValidityRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
+import com.kawa.service.dto.response.VendorTokenValidityResponseDTO;
 import com.kawa.web.rest.errors.BadRequestAlertException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.io.IOException;
@@ -45,8 +47,6 @@ public class VendorResource {
         this.vendorService = vendorService;
         this.vendorRepository = vendorRepository;
     }
-
-    //TODO: Create a connection endpoint for the vendor to connect to the system
 
     /**
      * {@code POST  /vendors} : Create a new vendor.
@@ -135,5 +135,19 @@ public class VendorResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code POST  /vendors/isValid} : Check if vendor token is valid.
+     * @param vendorTokenValidityRequestDTO the vendorTokenValidityRequestDTO to check.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the vendorTokenValidityResponseDTO.
+     */
+    @PostMapping("/vendors/isValid")
+    public ResponseEntity<VendorTokenValidityResponseDTO> isVendorTokenValid(
+        @Valid @RequestBody VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO
+    ) throws MessagingException, IOException, WriterException {
+        log.debug("REST request to check if vendor token is valid : {}", vendorTokenValidityRequestDTO);
+        VendorTokenValidityResponseDTO result = vendorService.isVendorTokenValid(vendorTokenValidityRequestDTO);
+        return ResponseEntity.ok().body(result);
     }
 }

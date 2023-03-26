@@ -3,11 +3,14 @@ package com.kawa.web.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.kawa.IntegrationTest;
 import com.kawa.domain.Vendor;
@@ -15,9 +18,14 @@ import com.kawa.repository.VendorRepository;
 import com.kawa.security.AuthoritiesConstants;
 import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.dto.request.VendorRequestDTO;
+import com.kawa.service.dto.request.VendorTokenValidityRequestDTO;
 import com.kawa.service.mapper.VendorRequestMapper;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeMessage;
@@ -32,6 +40,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -50,6 +59,9 @@ class VendorResourceIT {
     private static final String DEFAULT_TOKEN = "AAAAAAAAAA";
     private static final String UPDATED_TOKEN = "BBBBBBBBBB";
 
+    private static final String FAKE_TOKEN =
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY3OTMxODkyOH0.AA0SQ9EaSFyidYohoWFoXnr80_OT4_dxs-VCc0k7KpfTYZuEiI1uTThRDml-uPoCUoJkQxaKNQ6GDBynhQ-8AA";
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
@@ -65,8 +77,12 @@ class VendorResourceIT {
 
     private static final String DEFAULT_EMAIL_SUBJECT = "Bienvenue chez Paye ton Kawa";
 
+    private static final String DEFAULT_TOKEN_EXPIRED_EMAIL_SUBJECT = "Nouvel identifiant";
+
     private static final String ENTITY_API_URL = "/api/vendors";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+
+    private static final String TOKEN_VALIDITY_URL = ENTITY_API_URL + "/isValid";
 
     private static final Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
@@ -83,7 +99,7 @@ class VendorResourceIT {
     @Autowired
     private MockMvc restVendorMockMvc;
 
-    @Autowired
+    @SpyBean
     private TokenProvider tokenProvider;
 
     @Autowired
@@ -127,8 +143,9 @@ class VendorResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    public void initTest() throws FolderException {
         vendor = createEntity(em);
+        greenMail.purgeEmailFromAllMailboxes();
     }
 
     @BeforeAll
@@ -142,6 +159,17 @@ class VendorResourceIT {
             Arguments.of(UPDATED_EMAIL, null),
             Arguments.of("", UPDATED_PASSWORD),
             Arguments.of(UPDATED_EMAIL, "")
+        );
+    }
+
+    private static Stream<Arguments> provideArgsForVendorTokenShouldBe() {
+        Date expiryDateExpired = Date.from(Instant.now().minusSeconds(150));
+        Date expiryDateValid = Date.from(Instant.now().plusSeconds(150));
+
+        return Stream.of(
+            Arguments.of(true, false, true, expiryDateExpired), // token is in DB but it's expired
+            Arguments.of(true, true, false, expiryDateValid), // token is in DB and it's valid
+            Arguments.of(false, false, false, null) // token is not in DB
         );
     }
 
@@ -296,5 +324,47 @@ class VendorResourceIT {
         // Validate the database contains one less item
         List<Vendor> vendorList = vendorRepository.findAll();
         assertThat(vendorList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @ParameterizedTest
+    @Timeout(45)
+    @Transactional
+    @MethodSource("provideArgsForVendorTokenShouldBe")
+    void vendorTokenShouldBe(boolean isInDB, boolean isValid, boolean isExpired, Date expiryDate) throws Exception {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'+00:00'");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        when(tokenProvider.validateToken(anyString())).thenReturn(isValid);
+        when(tokenProvider.getExpirationDate(notNull())).thenReturn(expiryDate);
+
+        // use the mock tokenProvider in VendorServiceImpl
+
+        // put a fake jwt token with a valid format
+        if (isInDB) {
+            vendor.setToken(FAKE_TOKEN);
+        }
+
+        // Initialize the database
+        vendorRepository.saveAndFlush(vendor);
+
+        VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO = new VendorTokenValidityRequestDTO();
+        vendorTokenValidityRequestDTO.setToken(FAKE_TOKEN);
+
+        restVendorMockMvc
+            .perform(
+                post(TOKEN_VALIDITY_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(vendorTokenValidityRequestDTO))
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.valid").value(isInDB))
+            .andExpect(jsonPath("$.expired").value(isExpired))
+            .andExpect(jsonPath("$.expiryDate").value((expiryDate != null) ? formatter.format(expiryDate) : null));
+
+        if (isInDB && isExpired) {
+            assertThat(greenMail.getReceivedMessages()).hasSize(1);
+            MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
+            assertThat(receivedMessage.getSubject()).isEqualTo(DEFAULT_TOKEN_EXPIRED_EMAIL_SUBJECT);
+        }
     }
 }

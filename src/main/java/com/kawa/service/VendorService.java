@@ -2,7 +2,9 @@ package com.kawa.service;
 
 import com.google.zxing.WriterException;
 import com.kawa.service.dto.request.VendorRequestDTO;
+import com.kawa.service.dto.request.VendorTokenValidityRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
+import com.kawa.service.dto.response.VendorTokenValidityResponseDTO;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -49,4 +51,13 @@ public interface VendorService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Check if the vendor token is valid.
+     *
+     * @param vendorTokenValidityRequestDTO the request DTO VendorTokenValidityRequestDTO
+     * @return the response DTO VendorTokenValidityResponseDTO
+     */
+    VendorTokenValidityResponseDTO isVendorTokenValid(VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO)
+        throws MessagingException, IOException, WriterException;
 }

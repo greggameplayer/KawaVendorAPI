@@ -8,7 +8,9 @@ import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.EmailService;
 import com.kawa.service.VendorService;
 import com.kawa.service.dto.request.VendorRequestDTO;
+import com.kawa.service.dto.request.VendorTokenValidityRequestDTO;
 import com.kawa.service.dto.response.VendorResponseDTO;
+import com.kawa.service.dto.response.VendorTokenValidityResponseDTO;
 import com.kawa.service.mapper.VendorRequestMapper;
 import com.kawa.service.mapper.VendorResponseMapper;
 import java.io.File;
@@ -67,6 +69,23 @@ public class VendorServiceImpl implements VendorService {
         this.emailService = emailService;
     }
 
+    private void generateQRCodeAndSendEmail(String token, String templateName, String emailSubject, Vendor vendor)
+        throws IOException, WriterException, MessagingException {
+        File qrCode = emailService.generateQRCode(token);
+        String base64QrCode = DatatypeConverter.printBase64Binary(Files.readAllBytes(qrCode.toPath()));
+
+        Map<String, Object> templateModel = new HashMap<>();
+
+        templateModel.put("vendor", vendor.getName());
+        templateModel.put("token", token);
+        templateModel.put("qrCode", base64QrCode);
+
+        Map<String, File> attachments = new HashMap<>();
+
+        emailService.sendEmailFromTemplate(vendor.getEmail(), emailSubject, templateName, templateModel, true, true, attachments);
+        Files.delete(qrCode.toPath());
+    }
+
     @Override
     public VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) throws IOException, WriterException, MessagingException {
         log.debug("Request to save Vendor : {}", vendorRequestDTO);
@@ -82,28 +101,7 @@ public class VendorServiceImpl implements VendorService {
         vendor.setPassword(passwordEncoder.encode(vendorRequestDTO.getPassword()));
         vendor = vendorRepository.save(vendor);
 
-        File qrCode = emailService.generateQRCode(jwt);
-
-        String base64QrCode = DatatypeConverter.printBase64Binary(Files.readAllBytes(qrCode.toPath()));
-
-        Map<String, Object> templateModel = new HashMap<>();
-
-        templateModel.put("vendor", vendor.getName());
-        templateModel.put("token", jwt);
-        templateModel.put("qrCode", base64QrCode);
-
-        Map<String, File> attachments = new HashMap<>();
-
-        emailService.sendEmailFromTemplate(
-            vendor.getEmail(),
-            "Bienvenue chez Paye ton Kawa",
-            "new-vendor.ftlh",
-            templateModel,
-            true,
-            true,
-            attachments
-        );
-        Files.delete(qrCode.toPath());
+        generateQRCodeAndSendEmail(jwt, "new-vendor.ftlh", "Bienvenue chez Paye ton Kawa", vendor);
 
         return vendorResponseMapper.toDto(vendor);
     }
@@ -141,5 +139,38 @@ public class VendorServiceImpl implements VendorService {
     public void delete(Long id) {
         log.debug("Request to delete Vendor : {}", id);
         vendorRepository.deleteById(id);
+    }
+
+    @Override
+    public VendorTokenValidityResponseDTO isVendorTokenValid(VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO)
+        throws MessagingException, IOException, WriterException {
+        log.debug("Request to check if vendor token is valid : {}", vendorTokenValidityRequestDTO);
+
+        boolean isValid = vendorRepository.existsByToken(vendorTokenValidityRequestDTO.getToken());
+        boolean isExpired = false;
+        Date expirationDate = null;
+
+        if (isValid) {
+            isExpired = !tokenProvider.validateToken(vendorTokenValidityRequestDTO.getToken());
+            expirationDate = tokenProvider.getExpirationDate(vendorTokenValidityRequestDTO.getToken());
+            if (isExpired) {
+                Vendor vendor = vendorRepository.findByToken(vendorTokenValidityRequestDTO.getToken());
+
+                // create a jwt token for the vendor
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    vendor.getUsername(),
+                    vendor.getPassword(),
+                    Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
+                );
+
+                String jwt = tokenProvider.createToken(authentication, true);
+                vendor.setToken(jwt);
+                vendorRepository.save(vendor);
+
+                generateQRCodeAndSendEmail(vendorTokenValidityRequestDTO.getToken(), "token-expired.ftlh", "Nouvel identifiant", vendor);
+            }
+        }
+
+        return new VendorTokenValidityResponseDTO(isValid, isExpired, expirationDate);
     }
 }

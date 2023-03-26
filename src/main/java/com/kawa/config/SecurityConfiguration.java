@@ -50,7 +50,7 @@ public class SecurityConfiguration {
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/vendors").hasAuthority(AuthoritiesConstants.ADMIN)
-            .antMatchers("/api/vendors/login").permitAll()
+            .antMatchers("/api/vendors/isValid").permitAll()
             .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()

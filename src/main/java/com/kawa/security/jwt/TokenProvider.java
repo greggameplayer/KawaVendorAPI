@@ -123,4 +123,8 @@ public class TokenProvider {
 
         return false;
     }
+
+    public Date getExpirationDate(String token) {
+        return (token != null) ? jwtParser.parseClaimsJws(token).getBody().getExpiration() : null;
+    }
 }

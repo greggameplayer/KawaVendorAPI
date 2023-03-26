@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface VendorRepository extends JpaRepository<Vendor, Long> {}
+public interface VendorRepository extends JpaRepository<Vendor, Long> {
+    boolean existsByToken(String token);
+
+    Vendor findByToken(String token);
+}
