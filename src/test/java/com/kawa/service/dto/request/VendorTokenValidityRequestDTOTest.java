@@ -2,6 +2,7 @@ package com.kawa.service.dto.request;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 class VendorTokenValidityRequestDTOTest {
@@ -19,5 +20,27 @@ class VendorTokenValidityRequestDTOTest {
         vendorTokenValidityRequestDTO1.setToken(null);
         assertThat(vendorTokenValidityRequestDTO1.getToken()).isNull();
         assertThat(vendorTokenValidityRequestDTO2.getToken()).isNotNull();
+    }
+
+    @Test
+    void testToString() {
+        VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO = new VendorTokenValidityRequestDTO();
+        vendorTokenValidityRequestDTO.setToken("token");
+        assertThat(vendorTokenValidityRequestDTO.toString()).hasToString("VendorTokenValidityRequestDTO{token='token'}");
+    }
+
+    @Test
+    void testHashCode() {
+        VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO = new VendorTokenValidityRequestDTO();
+        vendorTokenValidityRequestDTO.setToken("token");
+        assertThat(vendorTokenValidityRequestDTO.hashCode()).isEqualTo(Objects.hash(vendorTokenValidityRequestDTO.getToken()));
+    }
+
+    @Test
+    void testEqualSameObject() {
+        VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO = new VendorTokenValidityRequestDTO();
+        vendorTokenValidityRequestDTO.setToken("token");
+        VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO2 = vendorTokenValidityRequestDTO;
+        assertThat(vendorTokenValidityRequestDTO).isEqualTo(vendorTokenValidityRequestDTO2);
     }
 }
