@@ -331,14 +331,16 @@ class VendorResourceIT {
     @Transactional
     @MethodSource("provideArgsForVendorTokenShouldBe")
     void vendorTokenShouldBe(boolean isInDB, boolean isValid, boolean isExpired, Date expiryDate) throws Exception {
+        // Initialize date formatter
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'+00:00'");
+
+        // Set time zone to GMT+0
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+
+        // Mock methods in TokenProvider
         when(tokenProvider.validateToken(anyString())).thenReturn(isValid);
         when(tokenProvider.getExpirationDate(notNull())).thenReturn(expiryDate);
 
-        // use the mock tokenProvider in VendorServiceImpl
-
-        // put a fake jwt token with a valid format
         if (isInDB) {
             vendor.setToken(FAKE_TOKEN);
         }
