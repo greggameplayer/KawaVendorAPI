@@ -50,6 +50,11 @@ jobs:
           chmod +x start-gui-zap
           chmod +x stop-zap
           echo $pwd
+      - name: Create docker.env file
+        env:
+          ENCRYPT_KEY: ${{ secrets.ENCRYPT_KEY_VENDOR }}
+        run: |
+          echo "ENCRYPT_KEY=$ENCRYPT_KEY" > ./src/main/docker/docker.env
       - name: Run Docker Container
         run: npm run docker:app:up
       - name: Run ZAP Daemon
