@@ -12,6 +12,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://kawavendorapi-postgresql:5432/KawaVendorAPI
       - SPRING_LIQUIBASE_URL=jdbc:postgresql://kawavendorapi-postgresql:5432/KawaVendorAPI
       - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
+    ports:
+      - '8081:8081'
   kawavendorapi-postgresql:
     image: postgres:14.5
     # volumes:
@@ -23,7 +25,7 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - "5432:5432"
+      - '5432:5432'
   jhipster-registry:
     image: jhipster/jhipster-registry:v7.3.0
     volumes:
@@ -46,4 +48,4 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - "8761:8761"
+      - '8761:8761'

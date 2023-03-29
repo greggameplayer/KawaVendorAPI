@@ -29,7 +29,7 @@ jobs:
       - name: Build docker image
         run: |
           chmod +x mvnw
-          npm run java:docker
+          ./mvnw -ntp verify -DskipTests -Pprod jib:dockerBuild -Djib.to.image=kawavendorapi:latest -Djib-maven-plugin.architecture=amd64 -Djib-maven-plugin.platform=linux/amd64
       - name: Install OWASP ZAP
         run: |
           mkdir -p ./zap
@@ -51,7 +51,7 @@ jobs:
           chmod +x stop-zap
           echo $pwd
       - name: Run Docker Container
-        run: docker run -d -p 8081:8081 kawavendorapi
+        run: npm run docker:app:up
       - name: Run ZAP Daemon
         run: ./zap/ZAP_2.9.0/zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.addrs.addr.name=".*" -config api.addrs.addr.regex=true -config api.disablekey=true > /dev/null &
       - name: Sleep for a bit
