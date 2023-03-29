@@ -29,7 +29,7 @@ jobs:
       - name: Build docker image
         run: |
           chmod +x mvnw
-          ./mvnw -ntp verify -DskipTests -Pprod jib:dockerBuild -Djib.to.image=kawavendorapi:latest -Djib-maven-plugin.architecture=amd64 -Djib-maven-plugin.platform=linux/amd64
+          ./mvnw -ntp verify -DskipTests -Pprod install dockerBuildOnly -Djib.to.image=kawavendorapi:latest
       - name: Install OWASP ZAP
         run: |
           mkdir -p ./zap
