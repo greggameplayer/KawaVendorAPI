@@ -1,7 +1,5 @@
 package com.kawa.service.dto.response.mongo;
 
-import com.kawa.domain.bean.Product;
-import org.springframework.context.annotation.Bean;
 
 public class ProductInsertMongoResponseDTO {
     private String insertedId;

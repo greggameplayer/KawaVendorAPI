@@ -1,6 +1,5 @@
 package com.kawa.service.dto.request.mongo;
 
-import com.kawa.domain.bean.Product;
 import org.springframework.context.annotation.Bean;
 
 public class ProductFindOneMongoRequestDTO {
