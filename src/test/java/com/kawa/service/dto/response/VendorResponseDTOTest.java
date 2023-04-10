@@ -2,7 +2,6 @@ package com.kawa.service.dto.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.kawa.service.dto.response.VendorResponseDTO;
 import com.kawa.web.rest.TestUtil;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;

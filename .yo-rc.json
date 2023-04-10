@@ -1,19 +1,17 @@
 {
   "generator-jhipster": {
     "applicationType": "microservice",
-    "appsFolders": ["KawaVendorAPI"],
+    "appsFolders": [ "KawaVendorAPI" ],
     "authenticationType": "jwt",
     "baseName": "KawaVendorAPI",
-    "blueprints": [
-      {
-        "name": "generator-jhipster-native",
-        "version": "1.3.2"
-      }
-    ],
+    "blueprints": [ {
+      "name": "generator-jhipster-native",
+      "version": "1.3.2"
+    } ],
     "buildTool": "maven",
     "cacheProvider": "hazelcast",
     "clientFramework": "no",
-    "clusteredDbApps": {},
+    "clusteredDbApps": { },
     "creationTimestamp": 1674745460765,
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
@@ -25,7 +23,7 @@
     "enableHibernateCache": true,
     "enableSwaggerCodegen": true,
     "enableTranslation": true,
-    "entities": ["Vendor"],
+    "entities": [ "Vendor" ],
     "entitySuffix": "",
     "ingressDomain": "vendor-mspr4.gregsvc.fr",
     "ingressType": "nginx",
@@ -37,32 +35,30 @@
     "kubernetesServiceType": "Ingress",
     "kubernetesStorageClassName": "longhorn-main",
     "kubernetesUseDynamicStorage": true,
-    "languages": ["fr", "en"],
+    "languages": [ "fr", "en" ],
     "lastLiquibaseTimestamp": 1676466646000,
     "messageBroker": false,
     "microfrontend": false,
-    "microfrontends": [],
+    "microfrontends": [ ],
     "monitoring": "prometheus",
     "nativeLanguage": "fr",
-    "otherModules": [
-      {
-        "name": "generator-jhipster-native",
-        "version": "1.3.2"
-      }
-    ],
+    "otherModules": [ {
+      "name": "generator-jhipster-native",
+      "version": "1.3.2"
+    } ],
     "packageName": "com.kawa",
-    "pages": [],
+    "pages": [ ],
     "prodDatabaseType": "postgresql",
     "reactive": false,
     "searchEngine": false,
     "serverPort": "8081",
-    "serverSideOptions": ["enableSwaggerCodegen:true"],
+    "serverSideOptions": [ "enableSwaggerCodegen:true" ],
     "serviceDiscoveryType": "eureka",
     "skipCheckLengthOfIdentifier": false,
     "skipClient": true,
     "skipFakeData": false,
     "skipUserManagement": true,
-    "testFrameworks": ["cucumber"],
+    "testFrameworks": [ "cucumber" ],
     "websocket": false,
     "withAdminUi": false
   }
