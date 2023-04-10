@@ -1,0 +1,59 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: deploy-pipeline
+spec:
+  description: | 
+    This pipeline clones a git repo, then deploy kubernetes manifests
+  params:
+  - name: repo-url
+    type: string
+    description: The git repo URL to clone from.
+  - name: repo-revision
+    type: string
+    description: The branch or tag to clone from.
+  - name: version-tag
+    type: string
+    description: The docker version tag
+  workspaces:
+  - name: shared-data
+    description: | 
+      This workspace contains the cloned repo files, so they can be read by the
+      next task.
+  - name: git-credentials
+    description: My ssh credentials
+  tasks:
+  - name: fetch-source
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    - name: basic-auth
+      workspace: git-credentials
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.repo-revision)
+  - name: replace-data-docker-version
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: replace-data
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: from
+      value: '@_DOCKER_VERSION_@'
+    - name: to
+      value: '$(params.version-tag)'
+    - name: file
+      value: 'kawavendorapi-k8s/kawavendorapi-deployment.yml'
+  - name: execute-kubectl-apply
+    runAfter: ["replace-data-docker-version"]
+    taskRef:
+      name: kubernetes-apply
+    workspaces:
+    - name: source
+      workspace: shared-data

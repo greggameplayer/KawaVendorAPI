@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kawavendorapi-app
+  namespace: tick
+  labels:
+    team: mspr4
+    app: kawavendorapi
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: kawavendorapi
+  endpoints:
+    - port: web
+      path: /prometheusMetrics

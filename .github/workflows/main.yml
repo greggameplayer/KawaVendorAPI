@@ -1,5 +1,5 @@
 name: Application CI
-on: [push, pull_request]
+on: [push]
 jobs:
   pipeline:
     name: KawaVendorAPI pipeline
@@ -48,10 +48,19 @@ jobs:
               echo No SONAR_TOKEN, skipping...
           fi
       - name: Package application
-        run: run java:jar:prod
+        run: npm run java:jar:prod
       - name: Build and publish docker image
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
         run: |
           GIT_TAG=:${GITHUB_REF#refs/tags/}
           DOCKER_TAG=${GIT_TAG#:refs/heads/main}
-          ./mvnw -ntp jib:build -Djib.to.image=registry.gregsvc.fr/kawa-vendor-api${DOCKER_TAG} -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.auth.password="${{ secrets.DOCKER_PASSWORD }}" -Pprod
+          ./mvnw -ntp jib:build -Djib.to.image=registry.gregsvc.fr/kawa-vendor-api:${DOCKER_TAG} -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.auth.password="${{ secrets.DOCKER_PASSWORD }}" -Pprod
+      - name: Emit Tekton notification to deploy to production
+        uses: wei/curl@v1.1.1
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+        env:
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          TEKTON_WEBHOOK: ${{ secrets.TEKTON_WEBHOOK }}
+        with:
+          args: "--location --request POST '$TEKTON_WEBHOOK' --header 'CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID' --header 'CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET' --header 'Content-Type: application/json' --data-raw '{ \"version-tag\": \"${DOCKER_TAG}\", \"repo-revision\": \"main\" }'"

@@ -1,0 +1,13 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: kawavendorapi-webhook
+spec:
+  serviceAccountName: pipeline-account
+  triggers:
+    - name: deploy-pipeline-webhook
+      bindings:
+        - ref: kawavendorapi-triggerbinding
+      template:
+        ref: kawavendorapi-trigger-template

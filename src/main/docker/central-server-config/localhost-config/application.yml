@@ -14,3 +14,16 @@ eureka:
   client:
     service-url:
       defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
+
+default-user:
+  username: '{cipher}f3db23a62f4317ac4e1a7883903de6892c837e2eac58ea13f77db2f4c144e413'
+  password: '{cipher}86ad898b18cb8417fbc885f09195e61cf9dbfff5d4faefc78caa8e3b7e533d02'
+
+email-service:
+  host: '{cipher}3ab9278d1363fb840e0176d8be4143f6c1a0ab3f320aea4975d55bff289fe293'
+  port: '{cipher}1a2baf9f6fa8be58cc94f454e29458c04e2b507ba0b1859cc7f0732d24c3f02b'
+  username: '{cipher}a4f5f3b4898ed7ce38182f74311b5b5eb5b5b23704884d04fe9bd0082e765653ed744fad1d4e6331b578944573ff10a7'
+  password: '{cipher}df32756757ee9fb1333c020fcc97c87d14756201e4217a880010e0d5264bf5eae58f706c3240c1024320b82782c46176'
+  starttls:
+    enable: true
+    required: true

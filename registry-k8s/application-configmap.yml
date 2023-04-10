@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+  namespace: mspr4
+#common configuration shared between all applications
+data:
+  application.yml: |-
+    configserver:
+      name:  JHipster Registry
+      status: Connected to the JHipster Registry running in Kubernetes
+    eureka:
+      client:
+        initial-instance-info-replication-interval-seconds: 15
+        instance-info-replication-interval-seconds: 15
+        registry-fetch-interval-seconds: 15
+        fetch-registry: true
+        register-with-eureka: true
+        eureka-service-url-poll-interval-seconds: 15
+      instance:
+        lease-renewal-interval-in-seconds: 10
+        registry-default-open-for-traffic-count: 0
+    jhipster:
+      security:
+        authentication:
+          jwt:
+            base64-secret: YWM2NDI4NTlkYzgwNDFhOWU0MjgxNzcwMjIyM2U1NWUzNjQ5ZDM3NDNhYWRhM2RhZGQ2NjkyMDE2ZjdjOGZkNGNlYThhMDVlMTRmNmY1ZmY3YmI3MWJhODlkZjA0MjRlZTZmOGUyYWY4ZGE0NzQxNGU4MmRmNjI1ZmY5ODVjNTE=
+    default-user:
+      username: '{cipher}a4698e5213c886b62800624d94dcdcc5953d4cee68447fa1c59bd48d7d92ca75'
+      password: '{cipher}2e475a96d63c090548cce8493863f3df673373c9ec005f28979aed303ea120bf'
+    email-service:
+      host: '{cipher}3ab9278d1363fb840e0176d8be4143f6c1a0ab3f320aea4975d55bff289fe293'
+      port: '{cipher}1a2baf9f6fa8be58cc94f454e29458c04e2b507ba0b1859cc7f0732d24c3f02b'
+      username: '{cipher}a4f5f3b4898ed7ce38182f74311b5b5eb5b5b23704884d04fe9bd0082e765653ed744fad1d4e6331b578944573ff10a7'
+      password: '{cipher}df32756757ee9fb1333c020fcc97c87d14756201e4217a880010e0d5264bf5eae58f706c3240c1024320b82782c46176'
+      starttls:
+        enable: true
+        required: true
+  # app specific configuration
+  jhipster-registry.yml: |-
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://admin:${spring.security.user.password}@jhipster-registry-0.jhipster-registry.mspr4.svc.cluster.local:8761/eureka/,http://admin:${spring.security.user.password}@jhipster-registry-1.jhipster-registry.mspr4.svc.cluster.local:8761/eureka/

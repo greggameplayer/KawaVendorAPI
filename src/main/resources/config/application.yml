@@ -16,7 +16,11 @@
 
 ---
 # Conditionally disable springdoc on missing api-docs profile
+
 spring:
+  freemarker:
+    suffix: .ftlh
+    template-loader-path: classpath:/templates
   config:
     activate:
       on-profile: '!api-docs'

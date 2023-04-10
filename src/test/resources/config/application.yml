@@ -23,6 +23,9 @@ eureka:
 spring:
   application:
     name: KawaVendorAPI
+  freemarker:
+    suffix: .ftlh
+    template-loader-path: classpath:/templates
   cloud:
     config:
       enabled: false
@@ -33,7 +36,11 @@ spring:
     serialization:
       write-durations-as-timestamps: false
   mail:
-    host: localhost
+    password: springboot
+    username: duke
+    host: 127.0.0.1
+    port: 3025 # default protocol port + 3000 as offset
+    protocol: smtp
   main:
     allow-bean-definition-overriding: true
   mvc:
@@ -100,3 +107,12 @@ management:
   health:
     mail:
       enabled: false
+
+email-service:
+  password: springboot
+  username: duke
+  host: 127.0.0.1
+  port: 3025 # default protocol port + 3000 as offset
+  starttls:
+    enable: false
+    required: false
