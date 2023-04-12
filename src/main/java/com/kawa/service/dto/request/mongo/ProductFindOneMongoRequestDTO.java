@@ -1,11 +1,20 @@
 package com.kawa.service.dto.request.mongo;
 
-import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Map;
+import java.util.Objects;
 
 public class ProductFindOneMongoRequestDTO {
+
     private String dataSource = "MainCluster";
     private String database = "kawavendorapi";
-    private String  collection = "products";
+    private String collection = "products";
+    private String filterId;
+
+    @JsonProperty("filter")
+    private void unpackNested(Map<String, Object> filter) {
+        this.filterId = (String) filter.get("_id");
+    }
 
     public String getDataSource() {
         return dataSource;
@@ -31,24 +40,49 @@ public class ProductFindOneMongoRequestDTO {
         this.collection = collection;
     }
 
-
-    @Bean
-    public Filter filter(){
-        return new Filter();
+    public String getFilterId() {
+        return filterId;
     }
 
-
-    public static class Filter {
-        private String _id;
-
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
+    public void setFilterId(String filterId) {
+        this.filterId = filterId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductFindOneMongoRequestDTO that = (ProductFindOneMongoRequestDTO) o;
+        return (
+            Objects.equals(dataSource, that.dataSource) &&
+            Objects.equals(database, that.database) &&
+            Objects.equals(collection, that.collection) &&
+            Objects.equals(filterId, that.filterId)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataSource, database, collection, filterId);
+    }
+
+    @Override
+    public String toString() {
+        return (
+            "ProductFindOneMongoRequestDTO{" +
+            "dataSource='" +
+            dataSource +
+            '\'' +
+            ", database='" +
+            database +
+            '\'' +
+            ", collection='" +
+            collection +
+            '\'' +
+            ", filterId='" +
+            filterId +
+            '\'' +
+            '}'
+        );
+    }
 }

@@ -1,87 +1,61 @@
 package com.kawa.domain.bean;
 
-import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 
-import java.util.Date;
+public class Product extends ProductWithoutId {
 
-public class Product {
+    @JsonProperty("_id")
+    private String id;
 
-    private String _id;
-    private Date createdAt;
-    private String name;
-    private int stock;
-
-    @Bean
-    public Product.Details details() {
-        return new Product.Details();
+    @SuppressWarnings("unchecked")
+    public void unpackNestedMap(Map<String, Object> map) throws ParseException {
+        super.unpackNestedMap(map);
+        Map<String, Object> details = (Map<String, Object>) map.get("details");
+        this.id = (String) details.get("_id");
     }
 
-
-    public static class Details {
-        private double price;
-        private String description;
-        private String color;
-
-        public double getPrice() {
-            return price;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public void setColor(String color) {
-            this.color = color;
-        }
+    public String getId() {
+        return id;
     }
 
-
-    public String get_id() {
-        return _id;
+    public Product id(String id) {
+        this.setId(id);
+        return this;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id);
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Product.class.getSimpleName() + "[", "]")
+            .add("id='" + id + "'")
+            .add("createdAt=" + getCreatedAt())
+            .add("name='" + getName() + "'")
+            .add("stock=" + getStock())
+            .add("detailsPrice=" + getDetailsPrice())
+            .add("detailsDescription='" + getDetailsDescription() + "'")
+            .add("detailsColor='" + getDetailsColor() + "'")
+            .toString();
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-
 }
-
-
-
