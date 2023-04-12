@@ -2,7 +2,6 @@ package com.kawa.domain.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
