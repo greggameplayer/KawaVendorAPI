@@ -11,6 +11,7 @@ public class Product extends ProductWithoutId {
     @JsonProperty("_id")
     private String id;
 
+    @Override
     @SuppressWarnings("unchecked")
     public void unpackNestedMap(Map<String, Object> map) throws ParseException {
         super.unpackNestedMap(map);
