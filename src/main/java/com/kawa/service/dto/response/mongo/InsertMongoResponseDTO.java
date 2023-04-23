@@ -2,9 +2,9 @@ package com.kawa.service.dto.response.mongo;
 
 import java.util.Objects;
 
-public class ProductInsertMongoResponseDTO {
+public class InsertMongoResponseDTO {
 
-    private String insertedId;
+    protected String insertedId;
 
     public String getInsertedId() {
         return insertedId;
@@ -17,8 +17,8 @@ public class ProductInsertMongoResponseDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductInsertMongoResponseDTO that = (ProductInsertMongoResponseDTO) o;
+        if (!(o instanceof InsertMongoResponseDTO)) return false;
+        InsertMongoResponseDTO that = (InsertMongoResponseDTO) o;
         return Objects.equals(insertedId, that.insertedId);
     }
 
@@ -29,6 +29,6 @@ public class ProductInsertMongoResponseDTO {
 
     @Override
     public String toString() {
-        return "ProductInsertMongoResponseDTO{" + "insertedId='" + insertedId + '\'' + '}';
+        return "InsertMongoResponseDTO{" + "insertedId='" + insertedId + '\'' + '}';
     }
 }

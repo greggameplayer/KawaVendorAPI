@@ -1,4 +1,4 @@
-package com.kawa.service.mapper;
+package com.kawa.service.mapper.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -116,3 +116,7 @@ email-service:
   starttls:
     enable: false
     required: false
+
+mongo:
+  api-key: 1234567890
+  url: mongodb://localhost:27017

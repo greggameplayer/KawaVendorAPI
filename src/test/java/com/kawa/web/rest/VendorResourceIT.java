@@ -19,7 +19,7 @@ import com.kawa.security.AuthoritiesConstants;
 import com.kawa.security.jwt.TokenProvider;
 import com.kawa.service.dto.request.VendorRequestDTO;
 import com.kawa.service.dto.request.VendorTokenValidityRequestDTO;
-import com.kawa.service.mapper.VendorRequestMapper;
+import com.kawa.service.mapper.request.VendorRequestMapper;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;

@@ -9,12 +9,18 @@ import java.util.Objects;
 
 public class ProductWithoutId {
 
+    protected final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
     protected Date createdAt;
     protected String name;
     protected int stock;
     protected double detailsPrice;
     protected String detailsDescription;
     protected String detailsColor;
+
+    public ProductWithoutId() {
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+    }
 
     @JsonProperty("details")
     protected void unpackNested(Map<String, Object> details) {
@@ -113,10 +119,18 @@ public class ProductWithoutId {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProductWithoutId)) {
+            return false;
+        }
         ProductWithoutId that = (ProductWithoutId) o;
         return (
+            createdAt != null &&
+            name != null &&
+            detailsDescription != null &&
+            detailsColor != null &&
             stock == that.stock &&
             Double.compare(that.detailsPrice, detailsPrice) == 0 &&
             Objects.equals(createdAt, that.createdAt) &&
@@ -128,16 +142,18 @@ public class ProductWithoutId {
 
     @Override
     public int hashCode() {
-        return Objects.hash(createdAt, name, stock, detailsPrice, detailsDescription, detailsColor);
+        return getClass().hashCode();
     }
 
     @Override
     public String toString() {
+        String createdAtStr = (this.createdAt == null) ? null : dateFormat.format(this.createdAt);
+
         return (
             "ProductWithoutId{" +
-            "createdAt=" +
-            createdAt +
-            ", name='" +
+            "createdAt='" +
+            createdAtStr +
+            "', name='" +
             name +
             '\'' +
             ", stock=" +

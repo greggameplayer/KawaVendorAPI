@@ -1,7 +1,8 @@
-package com.kawa.service.mapper;
+package com.kawa.service.mapper.response;
 
 import com.kawa.domain.Vendor;
 import com.kawa.service.dto.response.VendorResponseDTO;
+import com.kawa.service.mapper.EntityMapper;
 import org.mapstruct.*;
 
 /**

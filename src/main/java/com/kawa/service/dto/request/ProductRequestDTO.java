@@ -31,6 +31,6 @@ public class ProductRequestDTO implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", ProductRequestDTO.class.getSimpleName() + "[", "]").add("id='" + id + "'").toString();
+        return new StringJoiner(", ", ProductRequestDTO.class.getSimpleName() + "{", "}").add("id='" + id + "'").toString();
     }
 }

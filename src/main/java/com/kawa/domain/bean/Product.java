@@ -3,20 +3,21 @@ package com.kawa.domain.bean;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.ParseException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Product extends ProductWithoutId {
+
+    public Product() {
+        super();
+    }
 
     @JsonProperty("_id")
     private String id;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void unpackNestedMap(Map<String, Object> map) throws ParseException {
         super.unpackNestedMap(map);
-        Map<String, Object> details = (Map<String, Object>) map.get("details");
-        this.id = (String) details.get("_id");
+        this.id = (String) map.get("_id");
     }
 
     public String getId() {
@@ -34,23 +35,22 @@ public class Product extends ProductWithoutId {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Product)) {
+            return false;
+        }
+        return id != null && id.equals(((Product) o).id);
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Product.class.getSimpleName() + "[", "]")
+        String createdAtStr = (this.createdAt == null) ? null : dateFormat.format(this.createdAt);
+
+        return new StringJoiner(", ", Product.class.getSimpleName() + "{", "}")
             .add("id='" + id + "'")
-            .add("createdAt=" + getCreatedAt())
+            .add("createdAt='" + createdAtStr + "'")
             .add("name='" + getName() + "'")
             .add("stock=" + getStock())
             .add("detailsPrice=" + getDetailsPrice())

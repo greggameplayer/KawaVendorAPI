@@ -1,4 +1,4 @@
-package com.kawa.service.mapper;
+package com.kawa.service.mapper.request;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

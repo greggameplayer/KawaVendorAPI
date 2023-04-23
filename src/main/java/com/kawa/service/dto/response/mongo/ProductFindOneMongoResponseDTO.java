@@ -1,12 +1,12 @@
 package com.kawa.service.dto.response.mongo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kawa.domain.bean.Product;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
-public class ProductFindOneMongoResponseDTO {
+public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
 
     private String documentId;
     private Date documentCreatedAt;
@@ -16,8 +16,8 @@ public class ProductFindOneMongoResponseDTO {
     private String documentDetailsDescription;
     private String documentDetailsColor;
 
-    @JsonProperty("document")
-    private void unpackNested(Map<String, Object> document) throws ParseException {
+    @Override
+    protected void unpackNested(Map<String, Object> document) throws ParseException {
         Product product = new Product();
         product.unpackNestedMap(document);
         this.documentId = product.getId();
@@ -83,5 +83,60 @@ public class ProductFindOneMongoResponseDTO {
 
     public void setDocumentDetailsColor(String documentDetailsColor) {
         this.documentDetailsColor = documentDetailsColor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductFindOneMongoResponseDTO)) return false;
+        ProductFindOneMongoResponseDTO that = (ProductFindOneMongoResponseDTO) o;
+        return (
+            documentStock == that.documentStock &&
+            Double.compare(that.documentDetailsPrice, documentDetailsPrice) == 0 &&
+            Objects.equals(documentId, that.documentId) &&
+            Objects.equals(documentCreatedAt, that.documentCreatedAt) &&
+            Objects.equals(documentName, that.documentName) &&
+            Objects.equals(documentDetailsDescription, that.documentDetailsDescription) &&
+            Objects.equals(documentDetailsColor, that.documentDetailsColor)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            documentId,
+            documentCreatedAt,
+            documentName,
+            documentStock,
+            documentDetailsPrice,
+            documentDetailsDescription,
+            documentDetailsColor
+        );
+    }
+
+    @Override
+    public String toString() {
+        return (
+            "ProductFindOneMongoResponseDTO{" +
+            "documentId='" +
+            documentId +
+            '\'' +
+            ", documentCreatedAt=" +
+            documentCreatedAt +
+            ", documentName='" +
+            documentName +
+            '\'' +
+            ", documentStock=" +
+            documentStock +
+            ", documentDetailsPrice=" +
+            documentDetailsPrice +
+            ", documentDetailsDescription='" +
+            documentDetailsDescription +
+            '\'' +
+            ", documentDetailsColor='" +
+            documentDetailsColor +
+            '\'' +
+            "}"
+        );
     }
 }
