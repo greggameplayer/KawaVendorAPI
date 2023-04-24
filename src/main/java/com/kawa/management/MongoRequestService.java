@@ -38,7 +38,7 @@ public class MongoRequestService {
         return restTemplate.exchange(mongoUrl + "/action/findOne", HttpMethod.POST, entity, className).getBody();
     }
 
-    public <T extends FindAllMongoResponseDTO> T findAll(FindAllMongoRequestDTO requestDTO, Class<T> className) {
+    public <T extends FindAllMongoResponseDTO<?>> T findAll(FindAllMongoRequestDTO requestDTO, Class<T> className) {
         HttpEntity<FindAllMongoRequestDTO> entity = new HttpEntity<>(requestDTO, headers);
 
         return restTemplate.exchange(mongoUrl + "/action/find", HttpMethod.POST, entity, className).getBody();
