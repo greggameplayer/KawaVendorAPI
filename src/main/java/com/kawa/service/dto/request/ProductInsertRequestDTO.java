@@ -6,6 +6,8 @@ public class ProductInsertRequestDTO extends ProductWithoutId {
 
     @Override
     public String toString() {
-        return "ProductInsertRequestDTO{" + super.toString() + "}";
+        String superString = super.toString();
+        superString = superString.substring(superString.indexOf('{') + 1, superString.lastIndexOf('}'));
+        return "ProductInsertRequestDTO{" + superString + "}";
     }
 }
