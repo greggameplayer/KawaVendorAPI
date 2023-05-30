@@ -1,13 +1,14 @@
 package com.kawa.service.dto.response;
 
 import com.kawa.domain.bean.Product;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class ProductResponseDTO {
 
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public List<Product> getProducts() {
         return Collections.unmodifiableList(products);
