@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -80,7 +82,7 @@ class ProductInsertMongoRequestDTOTest {
         assertNotEquals(productInsertMongoRequestDTO1, productInsertMongoRequestDTO2);
 
         productInsertMongoRequestDTO2.setDocumentDetailsColor(productInsertMongoRequestDTO1.getDocumentDetailsColor());
-        productInsertMongoRequestDTO2.setDocumentCreatedAt(new Date());
+        productInsertMongoRequestDTO2.setDocumentCreatedAt(Date.from(Instant.now().plus(Duration.ofDays(1))));
         assertNotEquals(productInsertMongoRequestDTO1, productInsertMongoRequestDTO2);
     }
 
