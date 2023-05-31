@@ -1,6 +1,7 @@
 package com.kawa.service;
 
 import com.kawa.domain.bean.ProductWithoutId;
+import com.kawa.service.dto.response.ProductInsertResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
 
 public interface ProductService {
@@ -8,5 +9,5 @@ public interface ProductService {
 
     ProductResponseDTO getProducts();
 
-    ProductResponseDTO insertProduct(ProductWithoutId product);
+    ProductInsertResponseDTO insertProduct(ProductWithoutId product);
 }

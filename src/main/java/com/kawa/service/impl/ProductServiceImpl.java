@@ -8,6 +8,7 @@ import com.kawa.service.dto.request.ProductInsertRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductFindAllMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductFindOneMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductInsertMongoRequestDTO;
+import com.kawa.service.dto.response.ProductInsertResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
 import com.kawa.service.dto.response.mongo.InsertMongoResponseDTO;
 import com.kawa.service.dto.response.mongo.ProductFindAllMongoResponseDTO;
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDTO insertProduct(ProductWithoutId product) {
+    public ProductInsertResponseDTO insertProduct(ProductWithoutId product) {
         ProductInsertRequestDTO requestDTO = productInsertMongoRequestMapper.toDto(product);
         ProductInsertMongoRequestDTO mongoRequestDTO = productInsertMongoRequestMapper.toDto(requestDTO);
 

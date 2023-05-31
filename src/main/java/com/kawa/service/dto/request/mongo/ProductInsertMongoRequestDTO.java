@@ -2,11 +2,14 @@ package com.kawa.service.dto.request.mongo;
 
 import com.kawa.domain.bean.ProductWithoutId;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
 public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     private Date documentCreatedAt;
     private String documentName;
@@ -17,6 +20,7 @@ public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
 
     public ProductInsertMongoRequestDTO() {
         this.collection = "products";
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
     }
 
     @Override
@@ -121,9 +125,9 @@ public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
             ", collection='" +
             collection +
             '\'' +
-            ", documentCreatedAt=" +
-            documentCreatedAt +
-            ", documentName='" +
+            ", documentCreatedAt='" +
+            dateFormat.format(documentCreatedAt) +
+            "', documentName='" +
             documentName +
             '\'' +
             ", documentStock=" +

@@ -2,7 +2,7 @@ package com.kawa.web.rest;
 
 import com.kawa.service.ProductService;
 import com.kawa.service.dto.request.ProductInsertRequestDTO;
-import com.kawa.service.dto.request.ProductRequestDTO;
+import com.kawa.service.dto.response.ProductInsertResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import javax.validation.Valid;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductResource {
 
     private final Logger log = LoggerFactory.getLogger(ProductResource.class);
-
-    private static final String ENTITY_NAME = "kawaProductApiProduct";
 
     private final ProductService productService;
 
@@ -58,9 +56,9 @@ public class ProductResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productDTO, or with status {@code 400 (Bad Request)} if the product has already an ID.
      */
     @PostMapping("/products")
-    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductInsertRequestDTO productRequestDTO) {
+    public ResponseEntity<ProductInsertResponseDTO> createProduct(@Valid @RequestBody ProductInsertRequestDTO productRequestDTO) {
         log.info("REST request to save Product : {}", productRequestDTO);
-        ProductResponseDTO result = productService.insertProduct(productRequestDTO);
+        ProductInsertResponseDTO result = productService.insertProduct(productRequestDTO);
         return ResponseEntity.ok().body(result);
     }
 }

@@ -19,12 +19,16 @@ public interface VendorService {
      *
      * @param vendorRequestDTO the entity to save.
      * @return the persisted entity.
+     * @throws MessagingException if the email could not be sent.
+     * @throws IOException if the QR code could not be written to a file.
+     * @throws WriterException if the QR code could not be generated.
      */
     VendorResponseDTO save(VendorRequestDTO vendorRequestDTO) throws IOException, WriterException, MessagingException;
 
     /**
      * Updates a vendor.
      *
+     * @param id the id of the entity.
      * @param vendorRequestDTO the entity to update.
      * @return the persisted entity.
      */
@@ -57,6 +61,9 @@ public interface VendorService {
      *
      * @param vendorTokenValidityRequestDTO the request DTO VendorTokenValidityRequestDTO
      * @return the response DTO VendorTokenValidityResponseDTO
+     * @throws MessagingException if the email could not be sent.
+     * @throws IOException if the QR code could not be written to a file.
+     * @throws WriterException if the QR code could not be generated.
      */
     VendorTokenValidityResponseDTO isVendorTokenValid(VendorTokenValidityRequestDTO vendorTokenValidityRequestDTO)
         throws MessagingException, IOException, WriterException;
