@@ -20,7 +20,7 @@ public class MongoRequestService {
 
     private final RestTemplate restTemplate;
 
-    private final String HEADER_API_KEY = "api-key";
+    private static final String HEADER_API_KEY = "api-key";
 
     @Value("${mongo.api-key}")
     private String apiKey;

@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     private Date documentCreatedAt;
     private String documentName;
