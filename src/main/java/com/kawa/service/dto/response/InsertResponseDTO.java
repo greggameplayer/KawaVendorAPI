@@ -2,7 +2,7 @@ package com.kawa.service.dto.response;
 
 import java.util.Objects;
 
-public class ProductInsertResponseDTO {
+public class InsertResponseDTO {
 
     private String insertedId;
 
@@ -18,7 +18,7 @@ public class ProductInsertResponseDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductInsertResponseDTO that = (ProductInsertResponseDTO) o;
+        InsertResponseDTO that = (InsertResponseDTO) o;
         return Objects.equals(insertedId, that.insertedId);
     }
 

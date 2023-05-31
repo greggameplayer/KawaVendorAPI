@@ -4,22 +4,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class ProductInsertRequestDTOTest {
 
     private static final String JSON =
-        "{\"name\":\"Product 1\",\"createdAt\":\"2021-01-01T00:00:00.000Z\",\"stock\":\"1\",\"details\":{\"price\":10.0,\"description\":\"Description 1\",\"color\":\"Color 1\"}}";
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-    @BeforeAll
-    static void setUp() {
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-    }
+        "{\"name\":\"Product 1\",\"stock\":\"1\",\"details\":{\"price\":10.0,\"description\":\"Description 1\",\"color\":\"Color 1\"}}";
 
     @Test
     void whenUsingJsonNode() throws Exception {
@@ -46,16 +36,12 @@ class ProductInsertRequestDTOTest {
         productInsertRequestDTO2.setDetailsPrice(productInsertRequestDTO1.getDetailsPrice());
         productInsertRequestDTO2.setDetailsDescription(productInsertRequestDTO1.getDetailsDescription());
         productInsertRequestDTO2.setDetailsColor(productInsertRequestDTO1.getDetailsColor());
-        assertNotEquals(productInsertRequestDTO1, productInsertRequestDTO2);
-        productInsertRequestDTO2 = productInsertRequestDTO1;
         assertEquals(productInsertRequestDTO1, productInsertRequestDTO2);
     }
 
     @Test
     void testToString() {
         ProductInsertRequestDTO productInsertRequestDTO = new ProductInsertRequestDTO();
-        Date createdAt = new Date();
-        productInsertRequestDTO.setCreatedAt(createdAt);
         productInsertRequestDTO.setName("name");
         productInsertRequestDTO.setStock(1);
         productInsertRequestDTO.setDetailsPrice(10.0);
@@ -64,9 +50,7 @@ class ProductInsertRequestDTOTest {
         assertThat(productInsertRequestDTO.toString())
             .hasToString(
                 "ProductInsertRequestDTO{" +
-                "createdAt='" +
-                dateFormat.format(createdAt) +
-                "', name='" +
+                "name='" +
                 productInsertRequestDTO.getName() +
                 '\'' +
                 ", stock=" +
@@ -91,7 +75,13 @@ class ProductInsertRequestDTOTest {
         productInsertRequestDTO.setDetailsPrice(10.0);
         productInsertRequestDTO.setDetailsDescription("description");
         productInsertRequestDTO.setDetailsColor("color");
-        assertThat(productInsertRequestDTO.hashCode()).hasSameHashCodeAs(productInsertRequestDTO.getClass());
+        ProductInsertRequestDTO productInsertRequestDTO1 = new ProductInsertRequestDTO();
+        productInsertRequestDTO1.setName(productInsertRequestDTO.getName());
+        productInsertRequestDTO1.setStock(productInsertRequestDTO.getStock());
+        productInsertRequestDTO1.setDetailsPrice(productInsertRequestDTO.getDetailsPrice());
+        productInsertRequestDTO1.setDetailsDescription(productInsertRequestDTO.getDetailsDescription());
+        productInsertRequestDTO1.setDetailsColor(productInsertRequestDTO.getDetailsColor());
+        assertThat(productInsertRequestDTO).hasSameHashCodeAs(productInsertRequestDTO1);
     }
 
     @Test

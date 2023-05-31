@@ -1,23 +1,23 @@
 package com.kawa.service.impl;
 
 import com.kawa.domain.bean.Product;
-import com.kawa.domain.bean.ProductWithoutId;
 import com.kawa.management.MongoRequestService;
 import com.kawa.service.ProductService;
 import com.kawa.service.dto.request.ProductInsertRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductFindAllMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductFindOneMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductInsertMongoRequestDTO;
-import com.kawa.service.dto.response.ProductInsertResponseDTO;
+import com.kawa.service.dto.response.InsertResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
 import com.kawa.service.dto.response.mongo.InsertMongoResponseDTO;
 import com.kawa.service.dto.response.mongo.ProductFindAllMongoResponseDTO;
 import com.kawa.service.dto.response.mongo.ProductFindOneMongoResponseDTO;
-import com.kawa.service.mapper.request.ProductFindOneMongoRequestMapper;
-import com.kawa.service.mapper.request.ProductInsertMongoRequestMapper;
-import com.kawa.service.mapper.response.ProductFindAllMongoResponseMapper;
-import com.kawa.service.mapper.response.ProductFindOneMongoResponseMapper;
-import com.kawa.service.mapper.response.ProductInsertMongoResponseMapper;
+import com.kawa.service.mapper.request.FindOneMongoRequestMapper;
+import com.kawa.service.mapper.request.InsertMongoRequestMapper;
+import com.kawa.service.mapper.response.FindAllMongoResponseMapper;
+import com.kawa.service.mapper.response.FindOneMongoResponseMapper;
+import com.kawa.service.mapper.response.InsertMongoResponseMapper;
+import java.util.Date;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,55 +27,50 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductFindOneMongoRequestMapper productFindOneMongoRequestMapper;
+    private final FindOneMongoRequestMapper findOneMongoRequestMapper;
 
-    private final ProductFindOneMongoResponseMapper productFindOneMongoResponseMapper;
+    private final FindOneMongoResponseMapper findOneMongoResponseMapper;
 
-    private final ProductFindAllMongoResponseMapper productFindAllMongoResponseMapper;
+    private final FindAllMongoResponseMapper findAllMongoResponseMapper;
 
-    private final ProductInsertMongoRequestMapper productInsertMongoRequestMapper;
+    private final InsertMongoRequestMapper insertMongoRequestMapper;
 
-    private final ProductInsertMongoResponseMapper productInsertMongoResponseMapper;
+    private final InsertMongoResponseMapper insertMongoResponseMapper;
 
     private final MongoRequestService mongoRequestService;
 
     public ProductServiceImpl(
-        ProductFindOneMongoRequestMapper productFindOneMongoRequestMapper,
+        FindOneMongoRequestMapper findOneMongoRequestMapper,
         MongoRequestService mongoRequestService,
-        ProductFindOneMongoResponseMapper productFindOneMongoResponseMapper,
-        ProductFindAllMongoResponseMapper productFindAllMongoResponseMapper,
-        ProductInsertMongoRequestMapper productInsertMongoRequestMapper,
-        ProductInsertMongoResponseMapper productInsertMongoResponseMapper
+        FindOneMongoResponseMapper findOneMongoResponseMapper,
+        FindAllMongoResponseMapper findAllMongoResponseMapper,
+        InsertMongoRequestMapper insertMongoRequestMapper,
+        InsertMongoResponseMapper insertMongoResponseMapper
     ) {
-        this.productFindOneMongoRequestMapper = productFindOneMongoRequestMapper;
+        this.findOneMongoRequestMapper = findOneMongoRequestMapper;
         this.mongoRequestService = mongoRequestService;
-        this.productFindOneMongoResponseMapper = productFindOneMongoResponseMapper;
-        this.productFindAllMongoResponseMapper = productFindAllMongoResponseMapper;
-        this.productInsertMongoRequestMapper = productInsertMongoRequestMapper;
-        this.productInsertMongoResponseMapper = productInsertMongoResponseMapper;
+        this.findOneMongoResponseMapper = findOneMongoResponseMapper;
+        this.findAllMongoResponseMapper = findAllMongoResponseMapper;
+        this.insertMongoRequestMapper = insertMongoRequestMapper;
+        this.insertMongoResponseMapper = insertMongoResponseMapper;
     }
 
     @Override
     public ProductResponseDTO getProduct(String id) {
-        ProductFindOneMongoRequestDTO mongoRequestDTO = productFindOneMongoRequestMapper.toDto(id);
-        return productFindOneMongoResponseMapper.toEntity(
-            mongoRequestService.findOne(mongoRequestDTO, ProductFindOneMongoResponseDTO.class)
-        );
+        ProductFindOneMongoRequestDTO mongoRequestDTO = findOneMongoRequestMapper.toDto(id);
+        return findOneMongoResponseMapper.toEntity(mongoRequestService.findOne(mongoRequestDTO, ProductFindOneMongoResponseDTO.class));
     }
 
     @Override
     public ProductResponseDTO getProducts() {
         ProductFindAllMongoRequestDTO mongoRequestDTO = new ProductFindAllMongoRequestDTO();
-        return productFindAllMongoResponseMapper.toEntity(
-            mongoRequestService.findAll(mongoRequestDTO, ProductFindAllMongoResponseDTO.class)
-        );
+        return findAllMongoResponseMapper.toEntity(mongoRequestService.findAll(mongoRequestDTO, ProductFindAllMongoResponseDTO.class));
     }
 
     @Override
-    public ProductInsertResponseDTO insertProduct(ProductWithoutId product) {
-        ProductInsertRequestDTO requestDTO = productInsertMongoRequestMapper.toDto(product);
-        ProductInsertMongoRequestDTO mongoRequestDTO = productInsertMongoRequestMapper.toDto(requestDTO);
+    public InsertResponseDTO insertProduct(ProductInsertRequestDTO requestDTO) {
+        ProductInsertMongoRequestDTO mongoRequestDTO = insertMongoRequestMapper.toDto(requestDTO, new Date());
 
-        return productInsertMongoResponseMapper.toEntity(mongoRequestService.insert(mongoRequestDTO, InsertMongoResponseDTO.class));
+        return insertMongoResponseMapper.toEntity(mongoRequestService.insert(mongoRequestDTO, InsertMongoResponseDTO.class));
     }
 }

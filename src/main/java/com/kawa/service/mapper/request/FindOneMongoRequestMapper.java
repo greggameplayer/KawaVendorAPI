@@ -5,11 +5,9 @@ import com.kawa.service.dto.request.mongo.ProductFindOneMongoRequestDTO;
 import org.mapstruct.Mapper;
 
 /**
- * Mapper for the entity {@link Product} and its DTO {@link ProductFindOneMongoRequestDTO}.
+ * Mapper for the id of the entity {@link Product} and its Mongo DTO {@link ProductFindOneMongoRequestDTO}.
  */
 @Mapper(componentModel = "spring")
-public interface ProductFindOneMongoRequestMapper {
+public interface FindOneMongoRequestMapper {
     ProductFindOneMongoRequestDTO toDto(String id);
-
-    Product toEntity(ProductFindOneMongoRequestDTO dto);
 }
