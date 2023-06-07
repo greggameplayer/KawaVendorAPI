@@ -1,5 +1,6 @@
 package com.kawa.domain.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.ParseException;
 import java.util.Map;
@@ -42,6 +43,12 @@ public class Product extends ProductWithoutId {
             return false;
         }
         return id != null && id.equals(((Product) o).id);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isNull() {
+        return this.id == null && super.isNull();
     }
 
     @Override

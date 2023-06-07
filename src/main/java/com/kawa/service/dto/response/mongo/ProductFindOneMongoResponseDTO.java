@@ -1,12 +1,19 @@
 package com.kawa.service.dto.response.mongo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kawa.domain.bean.Product;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductFindOneMongoResponseDTO.class);
 
     private String documentId;
     private Date documentCreatedAt;
@@ -16,19 +23,30 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
     private String documentDetailsDescription;
     private String documentDetailsColor;
 
-    @Override
-    protected void unpackNested(Map<String, Object> document) throws ParseException {
-        Product product = new Product();
-        product.unpackNestedMap(document);
-        this.documentId = product.getId();
-        this.documentCreatedAt = product.getCreatedAt();
-        this.documentName = product.getName();
-        this.documentStock = product.getStock();
-        this.documentDetailsPrice = product.getDetailsPrice();
-        this.documentDetailsDescription = product.getDetailsDescription();
-        this.documentDetailsColor = product.getDetailsColor();
+    private final Product document = new Product();
+
+    private void setDocumentValues(Product innerProduct) {
+        this.documentId = innerProduct.getId();
+        this.documentCreatedAt = innerProduct.getCreatedAt();
+        this.documentName = innerProduct.getName();
+        this.documentStock = innerProduct.getStock();
+        this.documentDetailsPrice = innerProduct.getDetailsPrice();
+        this.documentDetailsDescription = innerProduct.getDetailsDescription();
+        this.documentDetailsColor = innerProduct.getDetailsColor();
     }
 
+    @JsonProperty("document")
+    @Override
+    protected void unpackNested(Map<String, Object> document) throws ParseException {
+        log.info("document: {}", document);
+        if (document != null) {
+            Product product = new Product();
+            product.unpackNestedMap(document);
+            setDocumentValues(product);
+        }
+    }
+
+    @JsonIgnore
     public String getDocumentId() {
         return documentId;
     }
@@ -37,6 +55,7 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentId = documentId;
     }
 
+    @JsonIgnore
     public Date getDocumentCreatedAt() {
         return documentCreatedAt;
     }
@@ -45,6 +64,7 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentCreatedAt = documentCreatedAt;
     }
 
+    @JsonIgnore
     public String getDocumentName() {
         return documentName;
     }
@@ -53,6 +73,7 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentName = documentName;
     }
 
+    @JsonIgnore
     public int getDocumentStock() {
         return documentStock;
     }
@@ -61,6 +82,7 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentStock = documentStock;
     }
 
+    @JsonIgnore
     public double getDocumentDetailsPrice() {
         return documentDetailsPrice;
     }
@@ -69,6 +91,7 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentDetailsPrice = documentDetailsPrice;
     }
 
+    @JsonIgnore
     public String getDocumentDetailsDescription() {
         return documentDetailsDescription;
     }
@@ -77,12 +100,30 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
         this.documentDetailsDescription = documentDetailsDescription;
     }
 
+    @JsonIgnore
     public String getDocumentDetailsColor() {
         return documentDetailsColor;
     }
 
     public void setDocumentDetailsColor(String documentDetailsColor) {
         this.documentDetailsColor = documentDetailsColor;
+    }
+
+    @JsonProperty("document")
+    @JsonIncludeProperties({ "createdAt", "name", "stock", "details", "_id" })
+    public Product getDocument() {
+        document.setId(documentId);
+        document.setCreatedAt(documentCreatedAt);
+        document.setName(documentName);
+        document.setStock(documentStock);
+        document.setDetailsPrice(documentDetailsPrice);
+        document.setDetailsDescription(documentDetailsDescription);
+        document.setDetailsColor(documentDetailsColor);
+        return document;
+    }
+
+    public void setDocument(Product document) {
+        setDocumentValues(document);
     }
 
     @Override

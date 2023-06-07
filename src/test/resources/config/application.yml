@@ -119,4 +119,4 @@ email-service:
 
 mongo:
   api-key: 1234567890
-  url: mongodb://localhost:27017
+  url: https://mongo.local

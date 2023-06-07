@@ -17,7 +17,6 @@ import com.kawa.service.mapper.request.InsertMongoRequestMapper;
 import com.kawa.service.mapper.response.FindAllMongoResponseMapper;
 import com.kawa.service.mapper.response.FindOneMongoResponseMapper;
 import com.kawa.service.mapper.response.InsertMongoResponseMapper;
-import java.util.Date;
 import org.springframework.stereotype.Service;
 
 /**
@@ -58,18 +57,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO getProduct(String id) {
         ProductFindOneMongoRequestDTO mongoRequestDTO = findOneMongoRequestMapper.toDto(id);
+
         return findOneMongoResponseMapper.toEntity(mongoRequestService.findOne(mongoRequestDTO, ProductFindOneMongoResponseDTO.class));
     }
 
     @Override
     public ProductResponseDTO getProducts() {
         ProductFindAllMongoRequestDTO mongoRequestDTO = new ProductFindAllMongoRequestDTO();
+
         return findAllMongoResponseMapper.toEntity(mongoRequestService.findAll(mongoRequestDTO, ProductFindAllMongoResponseDTO.class));
     }
 
     @Override
     public InsertResponseDTO insertProduct(ProductInsertRequestDTO requestDTO) {
-        ProductInsertMongoRequestDTO mongoRequestDTO = insertMongoRequestMapper.toDto(requestDTO, new Date());
+        ProductInsertMongoRequestDTO mongoRequestDTO = insertMongoRequestMapper.toDto(requestDTO);
 
         return insertMongoResponseMapper.toEntity(mongoRequestService.insert(mongoRequestDTO, InsertMongoResponseDTO.class));
     }

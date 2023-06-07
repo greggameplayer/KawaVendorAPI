@@ -1,5 +1,8 @@
 package com.kawa.service.dto.request.mongo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kawa.domain.bean.ProductWithoutId;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,13 +21,69 @@ public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
     private String documentDetailsDescription;
     private String documentDetailsColor;
 
+    private final ProductWithoutId document = new ProductWithoutId();
+
     public ProductInsertMongoRequestDTO() {
         this.collection = "products";
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
     }
 
-    @Override
-    protected void unpackNested(Map<String, Object> document) throws ParseException {
+    @JsonIgnore
+    public Date getDocumentCreatedAt() {
+        return documentCreatedAt;
+    }
+
+    public void setDocumentCreatedAt(Date documentCreatedAt) {
+        this.documentCreatedAt = documentCreatedAt;
+    }
+
+    @JsonIgnore
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
+
+    @JsonIgnore
+    public int getDocumentStock() {
+        return documentStock;
+    }
+
+    public void setDocumentStock(int documentStock) {
+        this.documentStock = documentStock;
+    }
+
+    @JsonIgnore
+    public double getDocumentDetailsPrice() {
+        return documentDetailsPrice;
+    }
+
+    public void setDocumentDetailsPrice(double documentDetailsPrice) {
+        this.documentDetailsPrice = documentDetailsPrice;
+    }
+
+    @JsonIgnore
+    public String getDocumentDetailsDescription() {
+        return documentDetailsDescription;
+    }
+
+    public void setDocumentDetailsDescription(String documentDetailsDescription) {
+        this.documentDetailsDescription = documentDetailsDescription;
+    }
+
+    @JsonIgnore
+    public String getDocumentDetailsColor() {
+        return documentDetailsColor;
+    }
+
+    public void setDocumentDetailsColor(String documentDetailsColor) {
+        this.documentDetailsColor = documentDetailsColor;
+    }
+
+    @JsonProperty("document")
+    private void unpackNested(Map<String, Object> document) throws ParseException {
         ProductWithoutId product = new ProductWithoutId();
         product.unpackNestedMap(document);
         documentCreatedAt = product.getCreatedAt();
@@ -35,52 +94,15 @@ public class ProductInsertMongoRequestDTO extends InsertMongoRequestDTO {
         documentDetailsColor = product.getDetailsColor();
     }
 
-    public Date getDocumentCreatedAt() {
-        return documentCreatedAt;
-    }
-
-    public void setDocumentCreatedAt(Date documentCreatedAt) {
-        this.documentCreatedAt = documentCreatedAt;
-    }
-
-    public String getDocumentName() {
-        return documentName;
-    }
-
-    public void setDocumentName(String documentName) {
-        this.documentName = documentName;
-    }
-
-    public int getDocumentStock() {
-        return documentStock;
-    }
-
-    public void setDocumentStock(int documentStock) {
-        this.documentStock = documentStock;
-    }
-
-    public double getDocumentDetailsPrice() {
-        return documentDetailsPrice;
-    }
-
-    public void setDocumentDetailsPrice(double documentDetailsPrice) {
-        this.documentDetailsPrice = documentDetailsPrice;
-    }
-
-    public String getDocumentDetailsDescription() {
-        return documentDetailsDescription;
-    }
-
-    public void setDocumentDetailsDescription(String documentDetailsDescription) {
-        this.documentDetailsDescription = documentDetailsDescription;
-    }
-
-    public String getDocumentDetailsColor() {
-        return documentDetailsColor;
-    }
-
-    public void setDocumentDetailsColor(String documentDetailsColor) {
-        this.documentDetailsColor = documentDetailsColor;
+    @JsonIncludeProperties({ "createdAt", "name", "stock", "details" })
+    public ProductWithoutId getDocument() {
+        document.setCreatedAt(documentCreatedAt);
+        document.setName(documentName);
+        document.setStock(documentStock);
+        document.setDetailsPrice(documentDetailsPrice);
+        document.setDetailsDescription(documentDetailsDescription);
+        document.setDetailsColor(documentDetailsColor);
+        return document;
     }
 
     @Override

@@ -1,13 +1,20 @@
 package com.kawa.domain.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class ProductWithoutId {
+
+    protected static final String DETAILS_PRICE = "price";
+
+    protected static final String STOCK_IDX = "stock";
 
     protected final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -18,13 +25,19 @@ public class ProductWithoutId {
     protected String detailsDescription;
     protected String detailsColor;
 
+    protected final Map<String, Object> details = new HashMap<>();
+
     public ProductWithoutId() {
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
     }
 
     @JsonProperty("details")
     protected void unpackNested(Map<String, Object> details) {
-        this.detailsPrice = (double) details.get("price");
+        if (details.get(DETAILS_PRICE) instanceof Double) {
+            this.detailsPrice = (double) details.get(DETAILS_PRICE);
+        } else {
+            this.detailsPrice = (Integer) details.get(DETAILS_PRICE);
+        }
         this.detailsDescription = (String) details.get("description");
         this.detailsColor = (String) details.get("color");
     }
@@ -34,11 +47,16 @@ public class ProductWithoutId {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         this.createdAt = formatter.parse((String) map.get("createdAt"));
         this.name = (String) map.get("name");
-        this.stock = Integer.parseInt((String) map.get("stock"));
-        Map<String, Object> details = (Map<String, Object>) map.get("details");
-        unpackNested(details);
+        if (map.get(STOCK_IDX) instanceof String) {
+            this.stock = Integer.parseInt((String) map.get(STOCK_IDX));
+        } else {
+            this.stock = (Integer) map.get(STOCK_IDX);
+        }
+        Map<String, Object> nestedDetails = (Map<String, Object>) map.get("details");
+        unpackNested(nestedDetails);
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -78,6 +96,7 @@ public class ProductWithoutId {
         this.stock = stock;
     }
 
+    @JsonIgnore
     public double getDetailsPrice() {
         return detailsPrice;
     }
@@ -91,6 +110,7 @@ public class ProductWithoutId {
         this.detailsPrice = detailsPrice;
     }
 
+    @JsonIgnore
     public String getDetailsDescription() {
         return detailsDescription;
     }
@@ -104,6 +124,7 @@ public class ProductWithoutId {
         this.detailsDescription = detailsDescription;
     }
 
+    @JsonIgnore
     public String getDetailsColor() {
         return detailsColor;
     }
@@ -115,6 +136,14 @@ public class ProductWithoutId {
 
     public void setDetailsColor(String detailsColor) {
         this.detailsColor = detailsColor;
+    }
+
+    public Map<String, Object> getDetails() {
+        this.details.put(DETAILS_PRICE, detailsPrice);
+        this.details.put("description", detailsDescription);
+        this.details.put("color", detailsColor);
+
+        return details;
     }
 
     @Override
@@ -138,6 +167,11 @@ public class ProductWithoutId {
             Objects.equals(detailsDescription, that.detailsDescription) &&
             Objects.equals(detailsColor, that.detailsColor)
         );
+    }
+
+    @JsonIgnore
+    public boolean isNull() {
+        return (createdAt == null && name == null && detailsDescription == null && detailsColor == null && stock == 0 && detailsPrice == 0);
     }
 
     @Override

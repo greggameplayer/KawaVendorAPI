@@ -1,8 +1,5 @@
 package com.kawa.service.dto.request.mongo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.text.ParseException;
-import java.util.Map;
 import java.util.Objects;
 
 public abstract class InsertMongoRequestDTO {
@@ -10,9 +7,6 @@ public abstract class InsertMongoRequestDTO {
     protected String dataSource = "MainCluster";
     protected String database = "kawavendorapi";
     protected String collection;
-
-    @JsonProperty("document")
-    protected abstract void unpackNested(Map<String, Object> document) throws ParseException;
 
     public String getDataSource() {
         return dataSource;
