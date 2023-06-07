@@ -141,6 +141,9 @@ public class VendorResource {
      * {@code POST  /vendors/isValid} : Check if vendor token is valid.
      * @param vendorTokenValidityRequestDTO the vendorTokenValidityRequestDTO to check.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the vendorTokenValidityResponseDTO.
+     * @throws MessagingException if the email could not be sent.
+     * @throws IOException if the QR code could not be written to a file.
+     * @throws WriterException if the QR code could not be generated.
      */
     @PostMapping("/vendors/isValid")
     public ResponseEntity<VendorTokenValidityResponseDTO> isVendorTokenValid(

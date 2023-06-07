@@ -52,6 +52,7 @@ public class SecurityConfiguration {
             .antMatchers("/api/vendors").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/vendors/isValid").permitAll()
             .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/api/products/**").hasAuthority(AuthoritiesConstants.USER)
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/health/**").permitAll()
