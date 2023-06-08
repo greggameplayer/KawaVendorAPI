@@ -1,6 +1,7 @@
 package com.kawa.service.mapper.request;
 
 import com.kawa.domain.bean.Product;
+import com.kawa.service.dto.request.mongo.OrderFindOneMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductFindOneMongoRequestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,4 +13,7 @@ import org.mapstruct.Mapping;
 public interface FindOneMongoRequestMapper {
     @Mapping(target = "filterId", source = "id")
     ProductFindOneMongoRequestDTO toDto(String id);
+
+    @Mapping(target = "filterId", source = "id")
+    OrderFindOneMongoRequestDTO toOrderDto(String id);
 }

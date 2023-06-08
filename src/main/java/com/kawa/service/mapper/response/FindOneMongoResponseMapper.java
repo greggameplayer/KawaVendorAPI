@@ -1,7 +1,10 @@
 package com.kawa.service.mapper.response;
 
+import com.kawa.domain.bean.Order;
 import com.kawa.domain.bean.Product;
+import com.kawa.service.dto.response.OrderResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
+import com.kawa.service.dto.response.mongo.OrderFindOneMongoResponseDTO;
 import com.kawa.service.dto.response.mongo.ProductFindOneMongoResponseDTO;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,5 +25,15 @@ public interface FindOneMongoResponseMapper {
 
     default List<Product> toEntityList(Product product) {
         return (product.isNull()) ? Collections.emptyList() : Collections.singletonList(product);
+    }
+
+    @Mapping(target = "orders", expression = "java(toOrderEntityList(dto.getDocument()))")
+    OrderResponseDTO toOrderEntity(OrderFindOneMongoResponseDTO dto);
+
+    @Mapping(target = "document", expression = "java(entityList.getOrders().get(0))")
+    OrderFindOneMongoResponseDTO toOrderDto(OrderResponseDTO entityList);
+
+    default List<Order> toOrderEntityList(Order order) {
+        return (order.isNull()) ? Collections.emptyList() : Collections.singletonList(order);
     }
 }

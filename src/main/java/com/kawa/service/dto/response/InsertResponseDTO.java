@@ -29,6 +29,6 @@ public class InsertResponseDTO {
 
     @Override
     public String toString() {
-        return "ProductInsertResponseDTO{" + "insertedId='" + insertedId + '\'' + '}';
+        return "InsertResponseDTO{" + "insertedId='" + insertedId + '\'' + '}';
     }
 }

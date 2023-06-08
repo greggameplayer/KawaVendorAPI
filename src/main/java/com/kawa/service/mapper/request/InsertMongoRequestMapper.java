@@ -1,6 +1,8 @@
 package com.kawa.service.mapper.request;
 
+import com.kawa.service.dto.request.OrderInsertRequestDTO;
 import com.kawa.service.dto.request.ProductInsertRequestDTO;
+import com.kawa.service.dto.request.mongo.OrderInsertMongoRequestDTO;
 import com.kawa.service.dto.request.mongo.ProductInsertMongoRequestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,4 +19,8 @@ public interface InsertMongoRequestMapper {
     @Mapping(target = "documentDetailsDescription", source = "detailsDescription")
     @Mapping(target = "documentDetailsColor", source = "detailsColor")
     ProductInsertMongoRequestDTO toDto(ProductInsertRequestDTO dto);
+
+    @Mapping(target = "documentCreatedAt", expression = "java(new java.util.Date())")
+    @Mapping(target = "documentCustomerId", source = "customerId")
+    OrderInsertMongoRequestDTO toOrderDto(OrderInsertRequestDTO dto);
 }

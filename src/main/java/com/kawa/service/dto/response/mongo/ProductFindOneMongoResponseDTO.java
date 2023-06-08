@@ -8,12 +8,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
-
-    private static final Logger log = LoggerFactory.getLogger(ProductFindOneMongoResponseDTO.class);
 
     private String documentId;
     private Date documentCreatedAt;
@@ -38,7 +34,6 @@ public class ProductFindOneMongoResponseDTO extends FindOneMongoResponseDTO {
     @JsonProperty("document")
     @Override
     protected void unpackNested(Map<String, Object> document) throws ParseException {
-        log.info("document: {}", document);
         if (document != null) {
             Product product = new Product();
             product.unpackNestedMap(document);
