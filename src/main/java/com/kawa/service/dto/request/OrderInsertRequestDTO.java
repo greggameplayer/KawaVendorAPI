@@ -1,6 +1,5 @@
 package com.kawa.service.dto.request;
 
-import com.kawa.domain.bean.Product;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
