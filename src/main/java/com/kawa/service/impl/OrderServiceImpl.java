@@ -6,9 +6,7 @@ import com.kawa.management.MongoRequestService;
 import com.kawa.service.OrderService;
 import com.kawa.service.ProductService;
 import com.kawa.service.dto.request.OrderInsertRequestDTO;
-import com.kawa.service.dto.request.mongo.OrderInsertMongoRequestDTO;
-import com.kawa.service.dto.request.mongo.ProductFindAllMongoRequestDTO;
-import com.kawa.service.dto.request.mongo.ProductFindOneMongoRequestDTO;
+import com.kawa.service.dto.request.mongo.*;
 import com.kawa.service.dto.response.InsertResponseDTO;
 import com.kawa.service.dto.response.OrderResponseDTO;
 import com.kawa.service.dto.response.ProductResponseDTO;
@@ -20,6 +18,7 @@ import com.kawa.service.mapper.request.InsertMongoRequestMapper;
 import com.kawa.service.mapper.response.FindAllMongoResponseMapper;
 import com.kawa.service.mapper.response.FindOneMongoResponseMapper;
 import com.kawa.service.mapper.response.InsertMongoResponseMapper;
+import com.kawa.web.rest.errors.ProductNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -64,14 +63,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDTO getOrder(String id) {
-        ProductFindOneMongoRequestDTO mongoRequestDTO = findOneMongoRequestMapper.toDto(id);
+        OrderFindOneMongoRequestDTO mongoRequestDTO = findOneMongoRequestMapper.toOrderDto(id);
 
         return findOneMongoResponseMapper.toOrderEntity(mongoRequestService.findOne(mongoRequestDTO, OrderFindOneMongoResponseDTO.class));
     }
 
     @Override
     public OrderResponseDTO getOrders() {
-        ProductFindAllMongoRequestDTO mongoRequestDTO = new ProductFindAllMongoRequestDTO();
+        OrderFindAllMongoRequestDTO mongoRequestDTO = new OrderFindAllMongoRequestDTO();
 
         return findAllMongoResponseMapper.toOrderEntity(mongoRequestService.findAll(mongoRequestDTO, OrderFindAllMongoResponseDTO.class));
     }
@@ -85,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
             ProductResponseDTO productResponseDTO = productService.getProduct(requestDTO.getProductIds().get(i));
 
             if (productResponseDTO.getProducts().isEmpty()) {
-                throw new RuntimeException("Product not found");
+                throw new ProductNotFoundException();
             }
 
             products.add(productResponseDTO.getProducts().get(0));

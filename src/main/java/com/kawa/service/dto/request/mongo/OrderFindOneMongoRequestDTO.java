@@ -1,5 +1,6 @@
 package com.kawa.service.dto.request.mongo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class OrderFindOneMongoRequestDTO extends FindOneMongoRequestDTO {
         this.filterId = (String) filter.get("_id");
     }
 
+    @JsonIgnore
     public String getFilterId() {
         return filterId;
     }
