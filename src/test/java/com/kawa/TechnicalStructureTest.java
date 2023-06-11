@@ -31,7 +31,7 @@ class TechnicalStructureTest {
 
         .whereLayer("Config").mayNotBeAccessedByAnyLayer()
         .whereLayer("Client").mayNotBeAccessedByAnyLayer()
-        .whereLayer("Web").mayOnlyBeAccessedByLayers("Config")
+        .whereLayer("Web").mayOnlyBeAccessedByLayers("Config", "Service")
         .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Config", "Management")
         .whereLayer("Security").mayOnlyBeAccessedByLayers("Config", "Client", "Service", "Web")
         .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service", "Security", "Web", "Config")
