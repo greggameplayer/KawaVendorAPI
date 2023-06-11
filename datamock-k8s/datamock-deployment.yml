@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datamock
+  namespace: mspr4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datamock
+      version: 'v1'
+  template:
+    metadata:
+      labels:
+        app: datamock
+        version: 'v1'
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - datamock
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - name: datamock
+          image: registry.gregsvc.fr/prism:4
+          command: ['mock', '-h', '0.0.0.0', '/config/data-openapi.yml']
+          volumeMounts:
+            - mountPath: "/config"
+              name: data-openapi
+              readOnly: true
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '500m'
+            limits:
+              memory: '1Gi'
+              cpu: '1'
+          ports:
+            - name: http
+              containerPort: 8079
+          readinessProbe:
+            httpGet:
+              path: /management/health/readiness
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /management/health/liveness
+              port: http
+            initialDelaySeconds: 120
+      volumes:
+        - name: data-openapi
+          configMap:
+            name: data-openapi

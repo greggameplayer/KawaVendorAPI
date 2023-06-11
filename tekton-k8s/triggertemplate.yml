@@ -1,0 +1,44 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: kawavendorapi-trigger-template
+spec:
+  params:
+    - name: version-tag
+      description: The docker image version tag
+      default: latest
+    - name: repo-revision
+      description: The repo branch or tag which is going to be fetched
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: kawavendorapi-run-
+      spec:
+        serviceAccountName: pipeline-account
+        pipelineRef:
+          name: deploy-pipeline
+        podTemplate:
+          securityContext:
+            fsGroup: 65532
+        workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+              storageClassName: longhorn-main
+        - name: git-credentials
+          secret:
+            secretName: greg-git-creds
+        params:
+          - name: repo-url
+            value: https://github.com/greggameplayer/KawaVendorAPI.git
+          - name: repo-revision
+            value: '$(tt.params.repo-revision)'
+          - name: version-tag
+            value: '$(tt.params.version-tag)'

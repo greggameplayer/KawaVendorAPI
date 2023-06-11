@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kubernetes-apply
+spec:
+  workspaces:
+  - name: source
+  steps:
+  - name: kubectl-apply-execution
+    image: bitnami/kubectl:latest
+    script: | 
+      #!/bin/sh
+      cd $(workspaces.source.path)
+      ./kubectl-apply.sh -f

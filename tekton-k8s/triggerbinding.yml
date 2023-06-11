@@ -1,0 +1,11 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: kawavendorapi-triggerbinding
+spec:
+  params:
+    - name: version-tag
+      value: '$(body.version-tag)'
+    - name: repo-revision
+      value: '$(body.repo-revision)'

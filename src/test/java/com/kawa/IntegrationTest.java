@@ -1,6 +1,5 @@
 package com.kawa;
 
-import com.kawa.KawaVendorApiApp;
 import com.kawa.config.AsyncSyncConfiguration;
 import com.kawa.config.EmbeddedSQL;
 import java.lang.annotation.ElementType;
