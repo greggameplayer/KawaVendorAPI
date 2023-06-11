@@ -58,9 +58,5 @@ jobs:
       - name: Emit Tekton notification to deploy to production
         uses: wei/curl@v1.1.1
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-        env:
-          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          TEKTON_WEBHOOK: ${{ secrets.TEKTON_WEBHOOK }}
         with:
-          args: "--location --request POST '$TEKTON_WEBHOOK' --header 'CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID' --header 'CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET' --header 'Content-Type: application/json' --data-raw '{ \"version-tag\": \"${DOCKER_TAG}\", \"repo-revision\": \"main\" }'"
+          args: "--location --request POST '${{ secrets.TEKTON_WEBHOOK }}' --header 'CF-Access-Client-Id: ${{ secrets.CF_ACCESS_CLIENT_ID }}' --header 'CF-Access-Client-Secret: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}' --header 'Content-Type: application/json' --data-raw '{ \"version-tag\": \"${DOCKER_TAG}\", \"repo-revision\": \"main\" }'"
