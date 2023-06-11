@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kawa.service.dto.request.ProductRequestDTO;
 import org.junit.jupiter.api.Test;
 
 class OrderRequestDTOTest {
