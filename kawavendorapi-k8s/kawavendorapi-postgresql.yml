@@ -47,6 +47,8 @@ spec:
           env:
             - name: POSTGRES_USER
               value: KawaVendorAPI
+            - name: POSTGRES_DB
+              value: kawavendorapi
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

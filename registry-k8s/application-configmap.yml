@@ -26,8 +26,8 @@ data:
           jwt:
             base64-secret: YWM2NDI4NTlkYzgwNDFhOWU0MjgxNzcwMjIyM2U1NWUzNjQ5ZDM3NDNhYWRhM2RhZGQ2NjkyMDE2ZjdjOGZkNGNlYThhMDVlMTRmNmY1ZmY3YmI3MWJhODlkZjA0MjRlZTZmOGUyYWY4ZGE0NzQxNGU4MmRmNjI1ZmY5ODVjNTE=
     default-user:
-      username: '{cipher}a4698e5213c886b62800624d94dcdcc5953d4cee68447fa1c59bd48d7d92ca75'
-      password: '{cipher}2e475a96d63c090548cce8493863f3df673373c9ec005f28979aed303ea120bf'
+      username: '{cipher}f3db23a62f4317ac4e1a7883903de6892c837e2eac58ea13f77db2f4c144e413'
+      password: '{cipher}86ad898b18cb8417fbc885f09195e61cf9dbfff5d4faefc78caa8e3b7e533d02'
     email-service:
       host: '{cipher}3ab9278d1363fb840e0176d8be4143f6c1a0ab3f320aea4975d55bff289fe293'
       port: '{cipher}1a2baf9f6fa8be58cc94f454e29458c04e2b507ba0b1859cc7f0732d24c3f02b'
@@ -36,6 +36,9 @@ data:
       starttls:
         enable: true
         required: true
+    mongo:
+      api-key: '{cipher}4c0a738429053ad788339449cd3b5f5fba62fe75c0753b47347b8646381ec0954369e426b95be506f5d0b3f316d5d412c13fa91447b9989058743b27b7df1d552d6efb6be329c4af3d5f22db954b4b65c96680724ce9b312fc9baef8ac228d19'
+      url: '{cipher}b23fdbb34507ea2257b1abc6d35aba0cc117c982918b51c45fb6dc03a43dcc9567f9146291ec5e5e997a7c89ce22e117879b10ac66c2b64ff140f031c8479e1ad028f47fd0f73c5f21ae2c7023c00901adcef471c80eda13bf34e47c7d45b310'
   # app specific configuration
   jhipster-registry.yml: |-
     eureka:
