@@ -3,32 +3,27 @@
   "clientRootFolder": "KawaVendorAPI",
   "databaseType": "sql",
   "dto": "mapstruct",
-  "fields": [
-    {
-      "fieldName": "token",
-      "fieldType": "String",
-      "fieldValidateRules": ["required", "unique"]
-    },
-    {
-      "fieldName": "name",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "username",
-      "fieldType": "String",
-      "fieldValidateRules": ["required", "unique"]
-    },
-    {
-      "fieldName": "password",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
-    }
-  ],
+  "fields": [ {
+    "fieldName": "token",
+    "fieldType": "String",
+    "fieldValidateRules": [ "required", "unique" ]
+  }, {
+    "fieldName": "name",
+    "fieldType": "String"
+  }, {
+    "fieldName": "username",
+    "fieldType": "String",
+    "fieldValidateRules": [ "required", "unique" ]
+  }, {
+    "fieldName": "password",
+    "fieldType": "String",
+    "fieldValidateRules": [ "required" ]
+  } ],
   "jpaMetamodelFiltering": false,
   "microserviceName": "KawaVendorAPI",
   "name": "Vendor",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [ ],
   "service": "serviceImpl"
 }
